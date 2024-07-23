@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1",
+    "title": "Spaghetti Carbonara",
+    "ingredients": "Spaghetti, Eggs, Parmesan cheese, Pancetta, Black pepper",
+    "instructions": "Cook spaghetti. Fry pancetta. Mix eggs with cheese. Combine all and serve."
+  },
+  {
+    "id": "2",
+    "title": "Chicken Alfredo",
+    "ingredients": "Chicken, Fettuccine, Cream, Parmesan cheese, Garlic",
+    "instructions": "Cook fettuccine. Grill chicken. Make Alfredo sauce. Combine and serve."
+  },
+  {
+    "id": "3",
+    "title": "Vegetable Stir-Fry",
+    "ingredients": "Broccoli, Bell peppers, Carrots, Soy sauce, Garlic, Ginger",
+    "instructions": "Stir-fry vegetables in a hot pan with garlic and ginger. Add soy sauce and serve with rice."
+  },
+  {
+    "id": "4",
+    "title": "Beef Tacos",
+    "ingredients": "Ground beef, Taco seasoning, Tortillas, Lettuce, Tomato, Cheese",
+    "instructions": "Cook beef with taco seasoning. Serve in tortillas with lettuce, tomato, and cheese."
+  },
+  {
+    "id": "5",
+    "title": "Greek Salad",
+    "ingredients": "Cucumbers, Tomatoes, Red onions, Feta cheese, Olives, Olive oil, Oregano",
+    "instructions": "Combine cucumbers, tomatoes, and onions. Top with feta, olives, and a drizzle of olive oil. Sprinkle with oregano."
+  },
+  {
+    "id": "6",
+    "title": "Chicken Curry",
+    "ingredients": "Chicken, Curry powder, Coconut milk, Onions, Garlic, Ginger, Tomatoes",
+    "instructions": "Cook onions, garlic, and ginger. Add chicken and curry powder. Stir in tomatoes and coconut milk. Simmer until chicken is cooked."
+  },
+  {
+    "id": "7",
+    "title": "Pancakes",
+    "ingredients": "Flour, Eggs, Milk, Baking powder, Sugar, Butter",
+    "instructions": "Mix dry ingredients. Whisk in eggs and milk. Cook pancakes on a hot griddle and serve with syrup."
+  },
+  {
+    "id": "8",
+    "title": "Caesar Salad",
+    "ingredients": "Romaine lettuce, Croutons, Parmesan cheese, Caesar dressing",
+    "instructions": "Toss lettuce with Caesar dressing. Top with croutons and Parmesan cheese."
+  },
+  {
+    "id": "9",
+    "title": "Margarita Pizza",
+    "ingredients": "Pizza dough, Tomato sauce, Mozzarella cheese, Basil, Olive oil",
+    "instructions": "Spread tomato sauce on dough. Top with mozzarella cheese and basil. Bake until crust is golden."
+  }
+]
