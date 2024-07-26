@@ -121,7 +121,7 @@ const Home = () => {
 
   return (
     <>
-     
+     <Header />
       <HomeContainer>
         <Title>Welcome to RecipeApp</Title>
         <Subtitle>Discover and share amazing recipes with the world!</Subtitle>
@@ -152,7 +152,7 @@ const Home = () => {
           </Slider>
         </SliderContainer>
       </HomeContainer>
-    
+      <Footer/>
     </>
   );
 };

@@ -7,10 +7,10 @@ import RecipeDetail from './components/RecipeDetail';
 import AddRecipe from './components/AddRecipe';
 import Profile from './components/Profile';
 
+
 function App() {
   return (
-    
-    <Router>
+    <><Router>
       <GlobalStyle />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -20,6 +20,8 @@ function App() {
         <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
+    
+    </>
   );
 }
 
