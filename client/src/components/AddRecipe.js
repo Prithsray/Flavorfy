@@ -56,49 +56,78 @@ const AddRecipe = () => {
   const [title, setTitle] = useState('');
   const [ingredients, setIngredients] = useState('');
   const [instructions, setInstructions] = useState('');
+  const [image, setImage] = useState(null);
 
-  const handleSubmit = (event) => {
+  const handleFileChange = (event) => {
+    setImage(event.target.files[0]);
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const newRecipe = { title, ingredients, instructions };
 
-    axios.post('http://localhost:5000/api/recipes', newRecipe)
-      .then(response => {
-        setTitle('');
-        setIngredients('');
-        setInstructions('');
-        alert('Recipe added successfully');
-      })
-      .catch(error => console.error(error));
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('ingredients', ingredients);
+    formData.append('instructions', instructions);
+    if (image) {
+      formData.append('image', image);
+    }
+
+    try {
+      await axios.post('http://localhost:5000/api/recipes', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setTitle('');
+      setIngredients('');
+      setInstructions('');
+      setImage(null);
+      alert('Recipe added successfully');
+    } catch (error) {
+      console.error('Error adding recipe:', error);
+    }
   };
 
   return (
-    <><Header /><AddRecipeContainer>
-      <h1>Add Recipe</h1>
-      <form onSubmit={handleSubmit}>
-        <FormGroup>
-          <Label>Title:</Label>
-          <Input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)} />
-        </FormGroup>
-        <FormGroup>
-          <Label>Ingredients:</Label>
-          <TextArea
-            rows="5"
-            value={ingredients}
-            onChange={(e) => setIngredients(e.target.value)} />
-        </FormGroup>
-        <FormGroup>
-          <Label>Instructions:</Label>
-          <TextArea
-            rows="5"
-            value={instructions}
-            onChange={(e) => setInstructions(e.target.value)} />
-        </FormGroup>
-        <Button type="submit">Add Recipe</Button>
-      </form>
-    </AddRecipeContainer><Footer /></>
+    <>
+      <Header />
+      <AddRecipeContainer>
+        <h1>Add Recipe</h1>
+        <form onSubmit={handleSubmit}>
+          <FormGroup>
+            <Label>Title:</Label>
+            <Input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)} />
+          </FormGroup>
+          <FormGroup>
+            <Label>Ingredients:</Label>
+            <TextArea
+              rows="5"
+              value={ingredients}
+              onChange={(e) => setIngredients(e.target.value)} />
+          </FormGroup>
+          <FormGroup>
+            <Label>Instructions:</Label>
+            <TextArea
+              rows="5"
+              value={instructions}
+              onChange={(e) => setInstructions(e.target.value)} />
+          </FormGroup>
+          <FormGroup>
+            <Label>Image:</Label>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange} />
+          </FormGroup>
+          <Button type="submit">Add Recipe</Button>
+        </form>
+      </AddRecipeContainer>
+      <Footer />
+    </>
   );
 };
 

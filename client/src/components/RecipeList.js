@@ -77,22 +77,29 @@ const RecipeList = () => {
   if (error) return <p>{error}</p>;
 
   return (
-      <><div><Header /></div><RecipeListContainer>
-      <h1>Recipes</h1>
-      {recipes && recipes.length > 0 ? (
-        recipes.map(recipe => (
-          <RecipeCard key={recipe.id}>
-            <RecipeImage src={recipe.image || 'https://via.placeholder.com/300x200'} alt={recipe.title} />
-            <RecipeContent>
-              <RecipeTitle>{recipe.title}</RecipeTitle>
-              <RecipeLink href={`/recipes/${recipe.id}`}>View Recipe</RecipeLink>
-            </RecipeContent>
-          </RecipeCard>
-        ))
-      ) : (
-        <p>No recipes available.</p>
-      )}
-    </RecipeListContainer><div> <Footer /></div></>  
+    <>
+      <Header />
+      <RecipeListContainer>
+        <h1>Recipes</h1>
+        {recipes && recipes.length > 0 ? (
+          recipes.map(recipe => (
+            <RecipeCard key={recipe.id}>
+              <RecipeImage
+                src={recipe.image ? `http://localhost:5000${recipe.image}` : 'https://via.placeholder.com/300x200'}
+                alt={recipe.title}
+              />
+              <RecipeContent>
+                <RecipeTitle>{recipe.title}</RecipeTitle>
+                <RecipeLink href={`/recipes/${recipe.id}`}>View Recipe</RecipeLink>
+              </RecipeContent>
+            </RecipeCard>
+          ))
+        ) : (
+          <p>No recipes available.</p>
+        )}
+      </RecipeListContainer>
+      <Footer />
+    </>
   );
 };
 
