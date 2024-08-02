@@ -72,10 +72,24 @@ const Button = styled.button`
   }
 `;
 
+const ErrorMessage = styled.p`
+  color: #dc3545;
+  margin: 1rem 0;
+  text-align: center;
+`;
+
+const SuccessMessage = styled.p`
+  color: #28a745;
+  margin: 1rem 0;
+  text-align: center;
+`;
+
 const LoginModal = ({ isOpen, onRequestClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState('');
+  const [closing, setClosing] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -85,6 +99,9 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
+
     try {
       const response = await axios.post('http://localhost:5000/api/login', {
         email,
@@ -92,14 +109,25 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
       }, {
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        withCredentials: true // Send cookies with request
       });
 
-      // Handle successful login
-      console.log('Login successful:', response.data);
-      // Optionally store the token in local storage or context
-      localStorage.setItem('token', response.data.token);
-      onRequestClose(); // Close the modal on successful login
+      const { token, user } = response.data;
+      console.log('Login successful:', user);
+
+      sessionStorage.setItem('user', JSON.stringify(user));
+      console.log(sessionStorage.getItem('user'));
+      sessionStorage.setItem('name', user.name);
+      sessionStorage.setItem('email',user.email); // Save user info in session storage
+      sessionStorage.setItem('token', token); // Save JWT token in session storage
+      setSuccess('Login successful!');
+      setClosing(true);
+
+      setTimeout(() => {
+        onRequestClose();
+        window.location.reload();
+      }, 2000);
 
     } catch (error) {
       setError('Invalid email or password');
@@ -110,7 +138,7 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onRequestClose={() => !closing && onRequestClose()}
       ariaHideApp={false}
       style={{
         overlay: {
@@ -124,14 +152,18 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
           borderRadius: '8px',
           padding: '0',
           margin: 'auto',
-          width: '410px',
-          height: '410px',
+          width: '80vw',
+          height: '80vh',
+          maxWidth: '400px',
+          maxHeight: '400px',
         },
       }}
     >
       <ModalContent>
-        <CloseButton onClick={onRequestClose}>&times;</CloseButton>
+        <CloseButton onClick={() => !closing && onRequestClose()}>&times;</CloseButton>
         <Title>Login</Title>
+        {success && <SuccessMessage>{success}</SuccessMessage>}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         <Form onSubmit={handleSubmit}>
           <Input
             type="email"
@@ -149,7 +181,6 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
             onChange={handleChange}
             required
           />
-          {error && <p style={{ color: 'red' }}>{error}</p>}
           <Button type="submit">Login</Button>
         </Form>
       </ModalContent>

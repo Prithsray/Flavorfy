@@ -1,42 +1,44 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
+const bcrypt = require('bcrypt');
+const prisma = require('../prismaClient');
 
 const router = express.Router();
 
-// Path to the users JSON file
-const dataPath = path.join(__dirname, '../data/users.json');
-let users = [];
-
-// Load existing users from the file
-if (fs.existsSync(dataPath)) {
-  users = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
-}
-
-// POST a new user registration
-router.post('/', (req, res) => {
+// POST register a new user
+router.post('/', async (req, res) => {
   const { name, email, password } = req.body;
-    console.log(name);
   if (!name || !email || !password) {
-    return res.status(400).json({ error: 'All fields are required' });
+    return res.status(400).json({ message: 'All fields are required' });
   }
 
-  // Check if user already exists
-  const existingUser = users.find(user => user.email === email);
-  if (existingUser) {
-    return res.status(400).json({ error: 'User already exists' });
+  try {
+    // Check if the user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email }
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create the new user
+    const newUser = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        bio: "None "
+      }
+    });
+
+    res.status(201).json(newUser);
+  } catch (error) {
+    console.error('Error registering user:', error);
+    res.status(500).json({ message: 'Error registering user' });
   }
-
-  const newUser = {
-    id: (users.length + 1).toString(),
-    name,
-    email,
-    password // In a real-world application, you should hash passwords before storing
-  };
-
-  users.push(newUser);
-  fs.writeFileSync(dataPath, JSON.stringify(users, null, 2), 'utf-8');
-  res.status(201).json(newUser);
 });
 
 module.exports = router;

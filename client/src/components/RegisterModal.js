@@ -71,35 +71,62 @@ const Button = styled.button`
   }
 `;
 
+const ErrorMessage = styled.p`
+  color: #dc3545;
+  margin: 1rem 0;
+  text-align: center;
+`;
+
+const SuccessMessage = styled.p`
+  color: #28a745;
+  margin: 1rem 0;
+  text-align: center;
+`;
+
 const RegisterModal = ({ isOpen, onRequestClose }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(''); // State for error messages
+  const [success, setSuccess] = useState(''); // State for success messages
+  const [closing, setClosing] = useState(false); // State to handle modal closing
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(''); // Clear previous error message
+    setSuccess(''); // Clear previous success message
+
     const formData = { name, email, password };
 
     try {
-      console.log('Form data being sent:', formData); // Debugging line to see the form data
       await axios.post('http://localhost:5000/api/register', formData, {
         headers: {
-          'Content-Type': 'application/json' // Ensure the content type is set to JSON
+          'Content-Type': 'application/json'
         }
       });
       setName('');
       setEmail('');
       setPassword('');
-      onRequestClose(); // Close the modal on successful registration
+      setSuccess('Registration successful!'); // Set success message
+      setClosing(true); // Set closing state to true
+
+      // Close the modal after a delay to show success message
+      setTimeout(() => {
+        onRequestClose();
+        window.location.reload();
+      }, 2000); // Adjust the delay as needed
+
     } catch (error) {
-      console.error('Registration failed:', error);
+      const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
+      setError(errorMessage); // Set error message from backend
+      console.error('Registration failed:', errorMessage);
     }
   };
 
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onRequestClose={() => !closing && onRequestClose()} // Ensure modal is not closed before success message
       ariaHideApp={false}
       style={{
         overlay: {
@@ -121,8 +148,10 @@ const RegisterModal = ({ isOpen, onRequestClose }) => {
       }}
     >
       <ModalContent>
-        <CloseButton onClick={onRequestClose}>&times;</CloseButton>
+        <CloseButton onClick={() => !closing && onRequestClose()}>&times;</CloseButton>
         <Title>Register</Title>
+        {success && <SuccessMessage>{success}</SuccessMessage>}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         <Form onSubmit={handleSubmit}>
           <Input 
             type="text" 

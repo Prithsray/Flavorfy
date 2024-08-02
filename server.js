@@ -2,23 +2,33 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const recipeRoutes = require('./routes/recipes');
-const registerRoutes = require('./routes/register'); // Add this line to import the register routes
-const loginRoutes = require('./routes/login'); // Import the login routes
+const session = require('express-session'); // Import express-session
 
+const recipeRoutes = require('./routes/recipes');
+const registerRoutes = require('./routes/register');
+const loginRoutes = require('./routes/login');
+const profileRoutes= require('./routes/profile');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({ origin: 'http://localhost:3000', credentials: true })); // Enable CORS for specific origin
 app.use(express.json());
+app.use(session({
+  secret: 'your_session_secret', // Change this to a more secure secret
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Routes
 app.use('/api/recipes', recipeRoutes);
-app.use('/api/register', registerRoutes); // Add this line to use the register routes
-app.use('/api/login', loginRoutes); // Use the login route
+app.use('/api/register', registerRoutes);
+app.use('/api/login', loginRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Start server
 app.listen(PORT, () => {

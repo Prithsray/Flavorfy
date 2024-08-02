@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Header from './Header';
 import Footer from './Footer';
+import axios from 'axios';
 
 const ProfileContainer = styled.div`
   padding: 2rem;
@@ -75,30 +76,103 @@ const EditButton = styled.button`
 `;
 
 const Profile = () => {
+  const [userData, setUserData] = useState(null);
+  const [bio, setBio] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const email = sessionStorage.getItem('email');
+      if (!email) return; // Exit if no email is found
+      else{
+      try {
+        const response = await axios.get('http://localhost:5000/api/profile', {
+          headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+            'Email': email
+          },
+          withCredentials: true
+        });
+        setUserData(response.data);
+        setBio(response.data.bio || '');
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    }};
+
+    fetchUserData();
+  }, []);
+
+  const handleBioChange = (e) => {
+    setBio(e.target.value);
+  };
+
+  const handleSave = async () => {
+    const email = sessionStorage.getItem('email'); // Retrieve email from session storage
+    try {
+      await axios.put('http://localhost:5000/api/profile', { bio }, {
+        headers: {
+          'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+          'Email': email
+        },
+        withCredentials: true
+      });
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+  };
+
+  if (!userData) {
+    return (
+      <>
+        <Header />
+        <ProfileContainer>
+          <p>Please log in to view your profile.</p>
+        </ProfileContainer>
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
       <Header />
       <ProfileContainer>
         <ProfileHeader>
-          <ProfilePicture src="https://via.placeholder.com/100" alt="Profile Picture" />
+          <ProfilePicture src={userData.profilePicture || "https://via.placeholder.com/100"} alt="Profile Picture" />
           <ProfileDetails>
-            <ProfileTitle>John Doe</ProfileTitle>
-            <ProfileSubtitle>@johndoe</ProfileSubtitle>
+            <ProfileTitle>{userData.name}</ProfileTitle>
+            <ProfileSubtitle>@{userData.name || 'johndoe'}</ProfileSubtitle>
           </ProfileDetails>
         </ProfileHeader>
         <ProfileContent>
           <ProfileSection>
             <Label>Email:</Label>
-            <Content>john.doe@example.com</Content>
+            <Content>{userData.email}</Content>
           </ProfileSection>
           <ProfileSection>
             <Label>Bio:</Label>
-            <Content>
-              Enthusiastic cook and food blogger. I love sharing recipes and tips for delicious meals.
-            </Content>
+            {isEditing ? (
+              <textarea
+                value={bio}
+                onChange={handleBioChange}
+                rows="4"
+                cols="50"
+              />
+            ) : (
+              <Content>{bio}</Content>
+            )}
           </ProfileSection>
           <ProfileSection>
-            <EditButton>Edit Profile</EditButton>
+            {isEditing ? (
+              <>
+                <EditButton onClick={handleSave}>Save</EditButton>
+                <EditButton onClick={() => setIsEditing(false)}>Cancel</EditButton>
+              </>
+            ) : (
+              <EditButton onClick={() => setIsEditing(true)}>Edit Profile</EditButton>
+            )}
           </ProfileSection>
         </ProfileContent>
       </ProfileContainer>

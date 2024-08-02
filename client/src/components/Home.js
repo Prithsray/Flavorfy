@@ -118,7 +118,7 @@ const Home = () => {
     prevArrow: <CustomArrow className="slick-prev">‹</CustomArrow>,
     nextArrow: <CustomArrow className="slick-next">›</CustomArrow>,
   };
-
+console.log(sessionStorage.getItem('email'))
   return (
     <>
      <Header />
