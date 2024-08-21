@@ -15,11 +15,12 @@ const RecipeDetailContainer = styled.div`
 `;
 
 const RecipeImage = styled.img`
-  width: 50%;
+  width: 100%;
   height: auto;
   max-height: 400px;
   object-fit: cover;
   border-bottom: 1px solid #ddd;
+  border-radius: 8px;
 `;
 
 const RecipeContent = styled.div`
@@ -27,13 +28,45 @@ const RecipeContent = styled.div`
 `;
 
 const RecipeTitle = styled.h1`
-  font-size: 2rem;
-  margin: 0;
+  font-size: 2.5rem;
+  margin: 0 0 1rem;
   color: #333;
+  text-align: center;
 `;
 
 const RecipeSection = styled.section`
   margin-top: 2rem;
+
+  h2 {
+    font-size: 1.75rem;
+    color: #28a745;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+  }
+`;
+
+const BackButton = styled.a`
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  margin-top: 2rem;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #28a745;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #218838;
+  }
 `;
 
 const RecipeDetail = () => {
@@ -76,6 +109,7 @@ const RecipeDetail = () => {
             <h2>Instructions</h2>
             <p>{recipe.instructions}</p>
           </RecipeSection>
+          <BackButton href="/recipes">Back to Recipes</BackButton>
         </RecipeContent>
       </RecipeDetailContainer>
       <Footer />
