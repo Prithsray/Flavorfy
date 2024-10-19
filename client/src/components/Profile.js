@@ -86,7 +86,7 @@ const Profile = () => {
       if (!email) return; // Exit if no email is found
       else{
       try {
-        const response = await axios.get('http://localhost:5000/api/profile', {
+        const response = await axios.get('https://mern-app-2pmn.onrender.com/api/profile', {
           headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
             'Email': email
@@ -110,7 +110,7 @@ const Profile = () => {
   const handleSave = async () => {
     const email = sessionStorage.getItem('email'); // Retrieve email from session storage
     try {
-      await axios.put('http://localhost:5000/api/profile', { bio }, {
+      await axios.put('https://mern-app-2pmn.onrender.com/api/profile', { bio }, {
         headers: {
           'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
           'Email': email

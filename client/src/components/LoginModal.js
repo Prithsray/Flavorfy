@@ -103,7 +103,7 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
     setSuccess('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/login', {
+      const response = await axios.post('https://mern-app-2pmn.onrender.com/api/login', {
         email,
         password
       }, {

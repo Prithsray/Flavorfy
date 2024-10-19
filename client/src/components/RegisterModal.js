@@ -99,7 +99,7 @@ const RegisterModal = ({ isOpen, onRequestClose }) => {
     const formData = { name, email, password };
 
     try {
-      await axios.post('http://localhost:5000/api/register', formData, {
+      await axios.post('https://mern-app-2pmn.onrender.com/api/register', formData, {
         headers: {
           'Content-Type': 'application/json'
         }

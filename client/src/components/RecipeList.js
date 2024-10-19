@@ -78,7 +78,7 @@ const RecipeList = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/recipes')
+    axios.get('https://mern-app-2pmn.onrender.com/api/recipes')
       .then(response => {
         setRecipes(response.data);
         setLoading(false);
@@ -102,7 +102,7 @@ const RecipeList = () => {
             recipes.map(recipe => (
               <RecipeCard key={recipe.id}>
                 <RecipeImage
-                  src={recipe.image ? `http://localhost:5000${recipe.image}` : 'https://via.placeholder.com/300x200'}
+                  src={recipe.image ? `https://mern-app-2pmn.onrender.com${recipe.image}` : 'https://via.placeholder.com/300x200'}
                   alt={recipe.title}
                 />
                 <RecipeContent>

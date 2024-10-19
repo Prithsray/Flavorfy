@@ -74,7 +74,7 @@ const AddRecipe = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/recipes', formData, {
+      await axios.post('https://mern-app-2pmn.onrender.com/api/recipes', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

@@ -76,7 +76,7 @@ const RecipeDetail = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/recipes/${id}`)
+    axios.get(`https://mern-app-2pmn.onrender.com/api/recipes/${id}`)
       .then(response => {
         setRecipe(response.data);
         setLoading(false);
@@ -96,7 +96,7 @@ const RecipeDetail = () => {
       <Header />
       <RecipeDetailContainer>
         <RecipeImage
-          src={recipe.image ? `http://localhost:5000${recipe.image}` : 'https://via.placeholder.com/800x400'}
+          src={recipe.image ? `https://mern-app-2pmn.onrender.com${recipe.image}` : 'https://via.placeholder.com/800x400'}
           alt={recipe.title}
         />
         <RecipeContent>
