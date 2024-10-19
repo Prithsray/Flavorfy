@@ -318,7 +318,7 @@ const Home = () => {
               </SlideText>
             </Slide>
             <Slide>
-              <SlideImage src="https://media.istockphoto.com/id/1224335366/photo/two-healthy-smoothie-bowls-with-fruits-granola-and-nuts.jpg" alt="Recipe 3" />
+              <SlideImage src="https://www.foodandwine.com/thmb/MsTd5zgsuEHBo1w-vWuuYQno0mw=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/FAW-recipes-pasta-sausage-basil-and-mustard-hero-06-cfd1c0a2989e474ea7e574a38182bbee.jpg" alt="Recipe 3" />
               <SlideText>
                 <h3>Recipe 3</h3>
                 <p>Try this amazing recipe for a healthy treat.</p>
