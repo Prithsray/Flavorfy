@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors({ origin: 'http://localhost:3000', credentials: true })); // Enable CORS for specific origin
+app.use(cors({ origin: 'https://mern-app-2pmn.onrender.com', credentials: true })); // Enable CORS for specific origin
 app.use(express.json());
 app.use(session({
   secret: 'your_session_secret', // Change this to a more secure secret
