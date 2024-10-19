@@ -3,6 +3,7 @@
   "scripts": {
     "start": "node server.js",
     "client": "cd client && npm start",
+    "build": "echo 'No build step for this backend'",
     "dev": "concurrently \"npm run start\" \"npm run client\""
   },
   "dependencies": {
