@@ -139,7 +139,7 @@ const Header = () => {
         <NavList>
           <NavItem><StyledLink to="/">Home</StyledLink></NavItem>
           <NavItem><StyledLink to="/recipes">Recipes</StyledLink></NavItem>
-          <NavItem><StyledLink to="/add-recipe">Add Recipe</StyledLink></NavItem>
+          {/* <NavItem><StyledLink to="/add-recipe">Add Recipe</StyledLink></NavItem> */}
         </NavList>
         <AuthNavList>
           {user ? (
@@ -149,6 +149,9 @@ const Header = () => {
               <DropdownMenu isOpen={isDropdownOpen}>
                 <Link to="/profile" style={{ textDecoration: 'none' }}>
                   <DropdownItem>Profile</DropdownItem>
+                </Link>
+                <Link to="/add-recipe" style={{ textDecoration: 'none' }}>
+                  <DropdownItem>Add Recipe</DropdownItem>
                 </Link>
                 <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
               </DropdownMenu>
