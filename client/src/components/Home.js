@@ -328,7 +328,7 @@ const Home = () => {
 
         <SectionTitle>Featured Recipes</SectionTitle>
         <FeaturedRecipes>
-          {featuredRecipes.slice(0, 6).map(recipe => (
+        {(featuredRecipes?.slice(0, 6) || []).map(recipe => (
             <RecipeCard key={recipe.id} onClick={() => window.location.href = `/recipes/${recipe.id}`}>
                 <RecipeImage
                 src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/300x200'}
