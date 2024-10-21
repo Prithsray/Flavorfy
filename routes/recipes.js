@@ -23,6 +23,7 @@ router.get('/:id', async (req, res) => {
       where: { id: Number(id) }
     });
     if (recipe) {
+      console.log(recipe);
       res.json(recipe);
     } else {
       res.status(404).json({ message: 'Recipe not found' });

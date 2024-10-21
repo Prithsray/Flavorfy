@@ -42,14 +42,17 @@ router.get('/', async (req, res) => {
 router.put('/', upload.single('profilePicture'), async (req, res) => {
   const email = req.headers.email.replace(/"/g, ''); // Retrieve email from headers
   const { bio } = req.body;
-  
+
   const updateData = {
     bio,
   };
 
   // If a new profile picture was uploaded, add it to the update data
   if (req.file) {
-    updateData.profilePicture = req.file.path; // Save the file path to the database
+    console.log(req.file);
+
+    // Construct the file path for the profile picture similar to how it's done for the recipe image
+    updateData.profilePicture = `/uploads/${req.file.filename}`; // Assuming '/uploads/' is the correct public path for your images
   }
 
   console.log(email);
@@ -57,14 +60,15 @@ router.put('/', upload.single('profilePicture'), async (req, res) => {
   try {
     const user = await prisma.user.update({
       where: { email }, // Use email to update the user
-      data: updateData // Update the bio and potentially the profile picture
+      data: updateData, // Update the bio and potentially the profile picture
     });
 
     res.json({ message: 'Profile updated successfully', user });
   } catch (error) {
-    console.log(error);
+    console.error('Error updating profile:', error);
     res.status(500).json({ message: 'Error updating profile' });
   }
 });
+
 
 module.exports = router;

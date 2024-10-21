@@ -81,9 +81,9 @@ const RecipeDetail = () => {
   const [recipe, setRecipe] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
   useEffect(() => {
-    axios.get(`/api/recipes/${id}`)
+    axios.get(`${API_BASE_URL}/api/recipes/${id}`)
       .then(response => {
         setRecipe(response.data);
         setLoading(false);
@@ -115,7 +115,7 @@ const RecipeDetail = () => {
       <Header />
       <RecipeDetailContainer>
         <RecipeImage
-          src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/800x400'}
+          src={recipe.image ? `${API_BASE_URL}${recipe.image}` : 'https://via.placeholder.com/800x400'}
           alt={recipe.title}
         />
         <RecipeContent>

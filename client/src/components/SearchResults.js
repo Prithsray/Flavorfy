@@ -85,10 +85,11 @@ const SearchResults = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (searchQuery) {
-      axios.get(`/api/search?query=${encodeURIComponent(searchQuery)}`)
+      axios.get(`${API_BASE_URL}/api/search?query=${encodeURIComponent(searchQuery)}`)
         .then(response => {
           setResults(response.data);
           setLoading(false);
@@ -113,7 +114,7 @@ const SearchResults = () => {
             results.map(recipe => (
               <RecipeCard key={recipe.id}>
                 <RecipeImage
-                  src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/300x200'}
+                  src={recipe.image ? `${API_BASE_URL}${recipe.image}` : 'https://via.placeholder.com/300x200'}
                   alt={recipe.title}
                 />
                 <RecipeContent>

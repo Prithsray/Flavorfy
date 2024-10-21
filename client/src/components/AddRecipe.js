@@ -79,6 +79,7 @@ const Title = styled.h1`
 `;
 
 const AddRecipe = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
   const [title, setTitle] = useState('');
   const [ingredients, setIngredients] = useState('');
   const [instructions, setInstructions] = useState('');
@@ -102,7 +103,7 @@ const AddRecipe = () => {
     }
 
     try {
-      await axios.post('/api/recipes', formData, {
+      await axios.post(`${API_BASE_URL}/api/recipes`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

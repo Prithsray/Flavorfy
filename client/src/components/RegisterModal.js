@@ -98,6 +98,7 @@ const RegisterModal = ({ isOpen, onRequestClose }) => {
   const [error, setError] = useState(''); // State for error messages
   const [success, setSuccess] = useState(''); // State for success messages
   const [closing, setClosing] = useState(false); // State to handle modal closing
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -107,7 +108,7 @@ const RegisterModal = ({ isOpen, onRequestClose }) => {
     const formData = { name, email, password };
 
     try {
-      await axios.post('/api/register', formData, {
+      await axios.post(`${API_BASE_URL}/api/register`, formData, {
         headers: {
           'Content-Type': 'application/json'
         }

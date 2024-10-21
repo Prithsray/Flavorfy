@@ -79,13 +79,13 @@ const Profile = () => {
   const [bio, setBio] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [newProfilePicture, setNewProfilePicture] = useState(null);
-
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
   useEffect(() => {
     const fetchUserData = async () => {
       const email = sessionStorage.getItem('email');
       if (!email) return; // Exit if no email is found
       try {
-        const response = await axios.get('/api/profile', {
+        const response = await axios.get(`${API_BASE_URL}/api/profile`, {
           headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
             'Email': email,
@@ -102,6 +102,7 @@ const Profile = () => {
     fetchUserData();
   }, []);
 
+  
   const handleBioChange = (e) => {
     setBio(e.target.value);
   };
@@ -117,11 +118,12 @@ const Profile = () => {
     // Append the bio and the new profile picture to the form data
     formData.append('bio', bio);
     if (newProfilePicture) {
+      console.log(newProfilePicture);
       formData.append('profilePicture', newProfilePicture);
     }
 
     try {
-      await axios.put('/api/profile', formData, {
+      await axios.put(`${API_BASE_URL}/api/profile`, formData, {
         headers: {
           'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
           'Email': email,
@@ -134,7 +136,7 @@ const Profile = () => {
       console.error('Error updating profile:', error);
     }
   };
-
+  
   if (!userData) {
     return (
       <>
@@ -151,7 +153,7 @@ const Profile = () => {
       <Header />
       <ProfileContainer>
         <ProfileHeader>
-          <ProfilePicture src={userData.profilePicture || "https://via.placeholder.com/100"} alt="Profile Picture" />
+          <ProfilePicture src={`${API_BASE_URL}${userData.profilePicture}`||'https://via.placeholder.com/100'} alt="Profile Picture" />
           <ProfileDetails>
             <ProfileTitle>{userData.name}</ProfileTitle>
             <ProfileSubtitle>@{userData.name || 'johndoe'}</ProfileSubtitle>
@@ -188,7 +190,7 @@ const Profile = () => {
               <Label>Profile Picture:</Label>
               {userData.profilePicture && (
                 <>
-                  <ProfilePicture src={userData.profilePicture} alt="Current Profile Picture" />
+                  <ProfilePicture src={`${API_BASE_URL}${userData.profilePicture}`} alt="Current Profile Picture" />
                   <Content>Current Profile Picture</Content>
                 </>
               )}

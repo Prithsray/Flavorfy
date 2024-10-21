@@ -12,10 +12,11 @@ const searchRoutes=require('./routes/search')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
+const FRONTEND_API_BASE_URL = process.env.FRONTEND_URL;
+console.log(FRONTEND_API_BASE_URL)
 // Middleware
 app.use(bodyParser.json());
-app.use(cors({ origin: 'https://flavorfy.vercel.app', credentials: true })); // Enable CORS for specific origin
+app.use(cors({ origin: `${FRONTEND_API_BASE_URL}`, credentials: true })); // Enable CORS for specific origin
 app.use(express.json());
 app.use(session({
   secret: 'your_session_secret', // Change this to a more secure secret

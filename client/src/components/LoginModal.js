@@ -115,7 +115,7 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
   const [success, setSuccess] = useState('');
   const [closing, setClosing] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
   // Function to open the register modal and close the login modal
   const openRegisterModal = () => {
     setIsRegisterModalOpen(true);
@@ -138,7 +138,7 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
     setSuccess('');
 
     try {
-      const response = await axios.post('/api/login', {
+      const response = await axios.post(`${API_BASE_URL}/api/login`, {
         email,
         password
       }, {

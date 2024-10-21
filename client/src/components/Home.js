@@ -264,7 +264,7 @@ const Home = () => {
   const [featuredRecipes, setFeaturedRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -276,9 +276,9 @@ const Home = () => {
     prevArrow: <CustomArrow className="slick-prev">‹</CustomArrow>,
     nextArrow: <CustomArrow className="slick-next">›</CustomArrow>,
   };
-
+  console.log(API_BASE_URL);
   useEffect(() => {
-    axios.get('/api/recipes')
+    axios.get(`${API_BASE_URL}/api/recipes`)
       .then(response => {
         setFeaturedRecipes(response.data);
         setLoading(false);
@@ -331,7 +331,7 @@ const Home = () => {
   {(featuredRecipes && Array.isArray(featuredRecipes) ? featuredRecipes.slice(0, 6) : []).map(recipe => (
     <RecipeCard key={recipe.id} onClick={() => window.location.href = `/recipes/${recipe.id}`}>
       <RecipeImage
-        src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/300x200'}
+        src={recipe.image ? `${API_BASE_URL}${recipe.image}` : 'https://via.placeholder.com/300x200'}
         alt={recipe.title}
       />
       <RecipeInfo>

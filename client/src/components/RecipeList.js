@@ -75,9 +75,9 @@ const RecipeList = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
   useEffect(() => {
-    axios.get('/api/recipes')
+    axios.get(`${API_BASE_URL}/api/recipes`)
       .then(response => {
         setRecipes(response.data);
         setLoading(false);
@@ -87,7 +87,7 @@ const RecipeList = () => {
         setLoading(false);
       });
   }, []);
-
+ 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -101,7 +101,7 @@ const RecipeList = () => {
             recipes.map(recipe => (
               <RecipeCard key={recipe.id}>
                 <RecipeImage
-                  src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/300x200'}
+                  src={recipe.image ? `${API_BASE_URL}${recipe.image}` : 'https://via.placeholder.com/300x200'}
                   alt={recipe.title}
                 />
                 <RecipeContent>
