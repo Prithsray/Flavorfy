@@ -3,9 +3,10 @@ import Modal from 'react-modal';
 import styled from 'styled-components';
 import axios from 'axios';
 
+// Styled Components
 const ModalContent = styled.div`
   padding: 2rem;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
   border-radius: 8px;
   width: 50vw;
   height: 50vw;
@@ -38,6 +39,12 @@ const Title = styled.h2`
   margin-bottom: 1rem;
   color: #28a745;
   text-align: center;
+`;
+
+const Logo = styled.img`
+  width: 30%; /* Adjust the size of the logo */
+  max-width: 200px; /* Maximum width */
+  margin-bottom: 1rem; /* Space below the logo */
 `;
 
 const Form = styled.form`
@@ -83,6 +90,7 @@ const SuccessMessage = styled.p`
   text-align: center;
 `;
 
+// Register Modal Component
 const RegisterModal = ({ isOpen, onRequestClose }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -99,7 +107,7 @@ const RegisterModal = ({ isOpen, onRequestClose }) => {
     const formData = { name, email, password };
 
     try {
-      await axios.post('https://mern-app-2pmn.onrender.com/api/register', formData, {
+      await axios.post('/api/register', formData, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -149,6 +157,7 @@ const RegisterModal = ({ isOpen, onRequestClose }) => {
     >
       <ModalContent>
         <CloseButton onClick={() => !closing && onRequestClose()}>&times;</CloseButton>
+        <Logo src="/logo_grey.png" alt="Logo" /> {/* Add logo here */}
         <Title>Register</Title>
         {success && <SuccessMessage>{success}</SuccessMessage>}
         {error && <ErrorMessage>{error}</ErrorMessage>}

@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from './Header';
 import styled from 'styled-components';
+import { useLocation } from 'react-router-dom';
 
-const RecipeListContainer = styled.div`
+const SearchResultsContainer = styled.div`
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -71,22 +72,33 @@ const RecipeLink = styled.a`
   }
 `;
 
-const RecipeList = () => {
-  const [recipes, setRecipes] = useState([]);
+const NoResultsMessage = styled.p`
+  color: #6c757d; /* Grey color for no results */
+  font-size: 1.2rem;
+  text-align: center;
+`;
+
+const SearchResults = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const searchQuery = queryParams.get('query'); // Get the search query from URL
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get('/api/recipes')
-      .then(response => {
-        setRecipes(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        setError('Failed to fetch recipes');
-        setLoading(false);
-      });
-  }, []);
+    if (searchQuery) {
+      axios.get(`/api/search?query=${encodeURIComponent(searchQuery)}`)
+        .then(response => {
+          setResults(response.data);
+          setLoading(false);
+        })
+        .catch(error => {
+          setError('Failed to fetch search results');
+          setLoading(false);
+        });
+    }
+  }, [searchQuery]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -94,11 +106,11 @@ const RecipeList = () => {
   return (
     <>
       <Header />
-      <RecipeListContainer>
-        <PageTitle>Our Recipes</PageTitle>
+      <SearchResultsContainer>
+        <PageTitle>Search Results for "{searchQuery}"</PageTitle>
         <RecipeListGrid>
-          {recipes && recipes.length > 0 ? (
-            recipes.map(recipe => (
+          {results && results.length > 0 ? (
+            results.map(recipe => (
               <RecipeCard key={recipe.id}>
                 <RecipeImage
                   src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/300x200'}
@@ -111,13 +123,13 @@ const RecipeList = () => {
               </RecipeCard>
             ))
           ) : (
-            <p>No recipes available.</p>
+            <NoResultsMessage>No results found.</NoResultsMessage>
           )}
         </RecipeListGrid>
-      </RecipeListContainer>
-    
+      </SearchResultsContainer>
+      
     </>
   );
 };
 
-export default RecipeList;
+export default SearchResults;

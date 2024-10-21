@@ -35,7 +35,7 @@ router.get('/:id', async (req, res) => {
 
 // POST a new recipe with image upload
 router.post('/', upload.single('image'), async (req, res) => {
-  const { title, ingredients, instructions } = req.body;
+  const { title, ingredients, instructions, videoLink } = req.body; // Include videoLink
   const image = req.file ? `/uploads/${req.file.filename}` : null;
 
   if (!title || !ingredients || !instructions) {
@@ -48,8 +48,9 @@ router.post('/', upload.single('image'), async (req, res) => {
         title,
         ingredients,
         instructions,
-        image
-      }
+        image,
+        videoLink, // Save the video link to the database
+      },
     });
     res.status(201).json(newRecipe);
   } catch (error) {

@@ -8,6 +8,7 @@ const recipeRoutes = require('./routes/recipes');
 const registerRoutes = require('./routes/register');
 const loginRoutes = require('./routes/login');
 const profileRoutes= require('./routes/profile');
+const searchRoutes=require('./routes/search')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -29,7 +30,7 @@ app.use('/api/recipes', recipeRoutes);
 app.use('/api/register', registerRoutes);
 app.use('/api/login', loginRoutes);
 app.use('/api/profile', profileRoutes);
-
+app.use('/api/search', searchRoutes);
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 import axios from 'axios';
+import RegisterModal from './RegisterModal';
 
+// Styled Components
 const ModalContent = styled.div`
   padding: 1.5rem;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.9); /* Set a transparent white background */
   border-radius: 8px;
   width: 80vw;
   height: 80vh;
@@ -38,6 +40,12 @@ const Title = styled.h2`
   margin-bottom: 1rem;
   color: #28a745;
   text-align: center;
+`;
+
+const Logo = styled.img`
+  width: 30%; /* Adjust the size of the logo */
+  max-width: 200px; /* Maximum width */
+  margin-bottom: 1rem; /* Space below the logo */
 `;
 
 const Form = styled.form`
@@ -84,12 +92,39 @@ const SuccessMessage = styled.p`
   text-align: center;
 `;
 
+const RegisterText = styled.p`
+  margin-top: 1rem;
+  text-align: center;
+`;
+
+const RegisterLink = styled.span`
+  color: #28a745;
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: #218838;
+  }
+`;
+
+// Login Modal Component
 const LoginModal = ({ isOpen, onRequestClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState('');
   const [closing, setClosing] = useState(false);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+
+  // Function to open the register modal and close the login modal
+  const openRegisterModal = () => {
+    setIsRegisterModalOpen(true);
+    onRequestClose(); // Close the LoginModal
+  };
+
+  const closeRegisterModal = () => {
+    setIsRegisterModalOpen(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -103,7 +138,7 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
     setSuccess('');
 
     try {
-      const response = await axios.post('https://mern-app-2pmn.onrender.com/api/login', {
+      const response = await axios.post('/api/login', {
         email,
         password
       }, {
@@ -117,9 +152,8 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
       console.log('Login successful:', user);
 
       sessionStorage.setItem('user', JSON.stringify(user));
-      console.log(sessionStorage.getItem('user'));
       sessionStorage.setItem('name', user.name);
-      sessionStorage.setItem('email',user.email); // Save user info in session storage
+      sessionStorage.setItem('email', user.email); // Save user info in session storage
       sessionStorage.setItem('token', token); // Save JWT token in session storage
       setSuccess('Login successful!');
       setClosing(true);
@@ -136,55 +170,65 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={() => !closing && onRequestClose()}
-      ariaHideApp={false}
-      style={{
-        overlay: {
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        },
-        content: {
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          border: 'none',
-          borderRadius: '8px',
-          padding: '0',
-          margin: 'auto',
-          width: '80vw',
-          height: '80vh',
-          maxWidth: '400px',
-          maxHeight: '400px',
-        },
-      }}
-    >
-      <ModalContent>
-        <CloseButton onClick={() => !closing && onRequestClose()}>&times;</CloseButton>
-        <Title>Login</Title>
-        {success && <SuccessMessage>{success}</SuccessMessage>}
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-        <Form onSubmit={handleSubmit}>
-          <Input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={email}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={password}
-            onChange={handleChange}
-            required
-          />
-          <Button type="submit">Login</Button>
-        </Form>
-      </ModalContent>
-    </Modal>
+    <>
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={() => !closing && onRequestClose()}
+        ariaHideApp={false}
+        style={{
+          overlay: {
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          },
+          content: {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '0',
+            margin: 'auto',
+            width: '80vw',
+            height: '80vh',
+            maxWidth: '400px',
+            maxHeight: '400px',
+          },
+        }}
+      >
+        <ModalContent>
+          <CloseButton onClick={() => !closing && onRequestClose()}>&times;</CloseButton>
+          <Logo src="/logo_grey.png" alt="Logo" /> {/* Add logo here */}
+          <Title>Login</Title>
+          {success && <SuccessMessage>{success}</SuccessMessage>}
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+          <Form onSubmit={handleSubmit}>
+            <Input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={email}
+              onChange={handleChange}
+              required
+            />
+            <Input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={password}
+              onChange={handleChange}
+              required
+            />
+            <Button type="submit">Login</Button>
+          </Form>
+          <RegisterText>
+            Don't have an account?{' '}
+            <RegisterLink onClick={openRegisterModal}>Register</RegisterLink>
+          </RegisterText>
+        </ModalContent>
+      </Modal>
+      
+      {/* Render the RegisterModal */}
+      <RegisterModal isOpen={isRegisterModalOpen} onRequestClose={closeRegisterModal} />
+    </>
   );
 };
 

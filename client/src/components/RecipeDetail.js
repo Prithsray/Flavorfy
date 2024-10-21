@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from './Header';
-import Footer from './Footer';
 import styled from 'styled-components';
 
 const RecipeDetailContainer = styled.div`
   padding: 2rem;
-  max-width: 800px;
+  max-width: 1000px;
   margin: auto;
   background-color: #fff;
   border-radius: 8px;
@@ -52,6 +51,14 @@ const RecipeSection = styled.section`
   }
 `;
 
+const VideoPlayer = styled.iframe`
+  width: 100%;
+  height: 400px; /* Set a height for the video player */
+  border: none; /* Remove border for a cleaner look */
+  border-radius: 8px; /* Rounded corners */
+  margin-top: 1rem; /* Add some space above the video player */
+`;
+
 const BackButton = styled.a`
   display: inline-block;
   padding: 0.75rem 1.5rem;
@@ -76,7 +83,7 @@ const RecipeDetail = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get(`https://mern-app-2pmn.onrender.com/api/recipes/${id}`)
+    axios.get(`/api/recipes/${id}`)
       .then(response => {
         setRecipe(response.data);
         setLoading(false);
@@ -88,6 +95,18 @@ const RecipeDetail = () => {
       });
   }, [id]);
 
+  const getEmbedUrl = (url) => {
+    const videoId = url.split('v=')[1];
+    if (videoId) {
+      const ampersandPosition = videoId.indexOf('&');
+      if (ampersandPosition !== -1) {
+        return `https://www.youtube.com/embed/${videoId.substring(0, ampersandPosition)}`;
+      }
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    return '';
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -96,7 +115,7 @@ const RecipeDetail = () => {
       <Header />
       <RecipeDetailContainer>
         <RecipeImage
-          src={recipe.image ? `https://mern-app-2pmn.onrender.com${recipe.image}` : 'https://via.placeholder.com/800x400'}
+          src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/800x400'}
           alt={recipe.title}
         />
         <RecipeContent>
@@ -109,10 +128,17 @@ const RecipeDetail = () => {
             <h2>Instructions</h2>
             <p>{recipe.instructions}</p>
           </RecipeSection>
+          {recipe.videoLink && (
+            <RecipeSection>
+              <h2>How to cook</h2>
+              {/* Embed the video using an iframe */}
+              <VideoPlayer src={getEmbedUrl(recipe.videoLink)} allowFullScreen title="Cooking Video" />
+            </RecipeSection>
+          )}
           <BackButton href="/recipes">Back to Recipes</BackButton>
         </RecipeContent>
       </RecipeDetailContainer>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

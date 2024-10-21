@@ -3,7 +3,6 @@ import axios from 'axios';
 import styled from 'styled-components';
 import Slider from 'react-slick';
 import Header from './Header';
-import Footer from './Footer';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -279,7 +278,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    axios.get('https://mern-app-2pmn.onrender.com/api/recipes')
+    axios.get('/api/recipes')
       .then(response => {
         setFeaturedRecipes(response.data);
         setLoading(false);
@@ -297,31 +296,31 @@ const Home = () => {
     <>
       <Header />
       <HomeContainer>
-        <Title>Welcome to RecipeApp</Title>
+        <Title>Welcome to Flavorfy</Title>
         <Subtitle>Discover and share amazing recipes with the world!</Subtitle>
         <Button onClick={() => window.location.href = '/recipes'}>Explore Recipes</Button>
 
         <SliderContainer>
           <Slider {...sliderSettings}>
             <Slide>
-              <SlideImage src="https://hips.hearstapps.com/hmg-prod/images/crepes-index-64347419e3c7a.jpg?crop=0.888888888888889xw:1xh;center,top&resize=1200:*" alt="Recipe 1" />
+              <SlideImage src="https://hips.hearstapps.com/hmg-prod/images/crepes-index-64347419e3c7a.jpg?crop=0.888888888888889xw:1xh;center,top&resize=1200:*" alt="Crepes" />
               <SlideText>
-                <h3>Recipe 1</h3>
-                <p>Delicious recipe description goes here.</p>
+                <h3>Crepes</h3>
+                <p>Delicate pancakes filled with sweet or savory.</p>
               </SlideText>
             </Slide>
             <Slide>
-              <SlideImage src="https://www.eatingwell.com/thmb/yMc-omrZge4WvdofEtjNWSVHG10=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/Chicken-piccata-casserole-3x2-167-f44730f489cc4b9493547de1c76a3b93.jpg" alt="Recipe 2" />
+              <SlideImage src="https://www.southernliving.com/thmb/rolXWVfkNEC-gZaupNKkmdXyaRA=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/2447004_chili_16-d59d432e74744a6a8567f4c87a344f53.jpg" alt="Classic Beef Chili" />
               <SlideText>
-                <h3>Recipe 2</h3>
-                <p>Another delicious recipe description goes here.</p>
+                <h3>Classic Beef Chili</h3>
+                <p>Hearty stew with ground beef and beans.</p>
               </SlideText>
             </Slide>
             <Slide>
-              <SlideImage src="https://www.foodandwine.com/thmb/MsTd5zgsuEHBo1w-vWuuYQno0mw=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/FAW-recipes-pasta-sausage-basil-and-mustard-hero-06-cfd1c0a2989e474ea7e574a38182bbee.jpg" alt="Recipe 3" />
+              <SlideImage src="https://www.foodandwine.com/thmb/MsTd5zgsuEHBo1w-vWuuYQno0mw=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/FAW-recipes-pasta-sausage-basil-and-mustard-hero-06-cfd1c0a2989e474ea7e574a38182bbee.jpg" alt="Pasta with Sausage, Basil, and Mustard" />
               <SlideText>
-                <h3>Recipe 3</h3>
-                <p>Try this amazing recipe for a healthy treat.</p>
+                <h3>Pasta with Sausage, Basil, and Mustard</h3>
+                <p>Savory pasta dish with sausage and basil.</p>
               </SlideText>
             </Slide>
           </Slider>
@@ -329,10 +328,10 @@ const Home = () => {
 
         <SectionTitle>Featured Recipes</SectionTitle>
         <FeaturedRecipes>
-          {featuredRecipes.map(recipe => (
+          {featuredRecipes.slice(0, 6).map(recipe => (
             <RecipeCard key={recipe.id} onClick={() => window.location.href = `/recipes/${recipe.id}`}>
                 <RecipeImage
-                src={recipe.image ? `https://mern-app-2pmn.onrender.com${recipe.image}` : 'https://via.placeholder.com/300x200'}
+                src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/300x200'}
                 alt={recipe.title}
               />              <RecipeInfo>
                 <h3>{recipe.title}</h3>
@@ -377,7 +376,7 @@ const Home = () => {
 
        
       </HomeContainer>
-      <Footer />
+      
     </>
   );
 };

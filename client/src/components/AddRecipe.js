@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import Header from './Header';
-import Footer from './Footer';
 
 const AddRecipeContainer = styled.div`
   padding: 2rem;
-  max-width: 600px;
+  max-width: 800px;
   margin: auto;
   background-color: #fff;
   border-radius: 8px;
@@ -19,8 +18,10 @@ const FormGroup = styled.div`
 
 const Label = styled.label`
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem; /* Reduced space between label and input */
   font-weight: bold;
+  font-size: 1.1rem; /* Increased font size */
+  color: #333; /* Darker color for better readability */
 `;
 
 const Input = styled.input`
@@ -28,6 +29,13 @@ const Input = styled.input`
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 1rem; /* Consistent font size */
+  transition: border-color 0.3s ease;
+
+  &:focus {
+    border-color: #28a745; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+  }
 `;
 
 const TextArea = styled.textarea`
@@ -35,6 +43,13 @@ const TextArea = styled.textarea`
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 1rem; /* Consistent font size */
+  transition: border-color 0.3s ease;
+
+  &:focus {
+    border-color: #28a745; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+  }
 `;
 
 const Button = styled.button`
@@ -48,8 +63,19 @@ const Button = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #218838;
+    background-color: #218838; /* Darker green on hover */
   }
+
+  &:disabled {
+    background-color: #ccc; /* Grey out button when disabled */
+    cursor: not-allowed;
+  }
+`;
+
+const Title = styled.h1`
+  text-align: center; /* Center title */
+  margin-bottom: 1.5rem; /* Space below title */
+  color: #28a745; /* Matching title color with button */
 `;
 
 const AddRecipe = () => {
@@ -57,6 +83,7 @@ const AddRecipe = () => {
   const [ingredients, setIngredients] = useState('');
   const [instructions, setInstructions] = useState('');
   const [image, setImage] = useState(null);
+  const [videoLink, setVideoLink] = useState(''); // New state for video link
 
   const handleFileChange = (event) => {
     setImage(event.target.files[0]);
@@ -69,12 +96,13 @@ const AddRecipe = () => {
     formData.append('title', title);
     formData.append('ingredients', ingredients);
     formData.append('instructions', instructions);
+    formData.append('videoLink', videoLink); // Append video link to formData
     if (image) {
       formData.append('image', image);
     }
 
     try {
-      await axios.post('https://mern-app-2pmn.onrender.com/api/recipes', formData, {
+      await axios.post('/api/recipes', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -82,6 +110,7 @@ const AddRecipe = () => {
       setTitle('');
       setIngredients('');
       setInstructions('');
+      setVideoLink(''); // Clear video link after submission
       setImage(null);
       alert('Recipe added successfully');
     } catch (error) {
@@ -93,40 +122,56 @@ const AddRecipe = () => {
     <>
       <Header />
       <AddRecipeContainer>
-        <h1>Add Recipe</h1>
+        <Title>Add Recipe</Title>
         <form onSubmit={handleSubmit}>
           <FormGroup>
             <Label>Title:</Label>
             <Input
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)} />
+              onChange={(e) => setTitle(e.target.value)}
+              required // Make the field required
+            />
           </FormGroup>
           <FormGroup>
             <Label>Ingredients:</Label>
             <TextArea
               rows="5"
               value={ingredients}
-              onChange={(e) => setIngredients(e.target.value)} />
+              onChange={(e) => setIngredients(e.target.value)}
+              required // Make the field required
+            />
           </FormGroup>
           <FormGroup>
             <Label>Instructions:</Label>
             <TextArea
               rows="5"
               value={instructions}
-              onChange={(e) => setInstructions(e.target.value)} />
+              onChange={(e) => setInstructions(e.target.value)}
+              required // Make the field required
+            />
           </FormGroup>
           <FormGroup>
             <Label>Image:</Label>
             <Input
               type="file"
               accept="image/*"
-              onChange={handleFileChange} />
+              onChange={handleFileChange}
+              required // Make the field required
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label> Cooking Video Link (If Any) :</Label>
+            <Input
+              type="url" // Use url type for validation
+              value={videoLink}
+              onChange={(e) => setVideoLink(e.target.value)}
+              placeholder="https://www.youtube.com/watch?v=example" // Example placeholder
+            />
           </FormGroup>
           <Button type="submit">Add Recipe</Button>
         </form>
       </AddRecipeContainer>
-      <Footer />
     </>
   );
 };

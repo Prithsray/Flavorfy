@@ -14,7 +14,7 @@ const FooterContainer = styled.footer`
 const Footer = () => {
   return (
     <FooterContainer>
-      <p>&copy; 2024 RecipeApp. All rights reserved.</p>
+      <p>&copy; 2024 Flavorfy. All rights reserved.</p>
     </FooterContainer>
   );
 };

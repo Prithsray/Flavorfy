@@ -15,12 +15,14 @@ datasource db {
 
 
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
-  password String
-  bio String
+  id             Int    @id @default(autoincrement())
+  name           String
+  email          String @unique
+  password       String
+  bio            String
+  profilePicture String? // Add this line for the profile picture
 }
+
 
 model Recipe {
   id          Int      @id @default(autoincrement())
@@ -28,4 +30,5 @@ model Recipe {
   ingredients String
   instructions String
   image       String?  // Optional field for storing image URL or path
+  videoLink   String?  // Optional field for storing YouTube video link
 }

@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
     const user = await prisma.user.findUnique({
       where: { email: email }
     });
-
+    console.log(user);
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
