@@ -328,18 +328,19 @@ const Home = () => {
 
         <SectionTitle>Featured Recipes</SectionTitle>
         <FeaturedRecipes>
-          {featuredRecipes.map(recipe => (
-            <RecipeCard key={recipe.id} onClick={() => window.location.href = `/recipes/${recipe.id}`}>
-                <RecipeImage
-                src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/300x200'}
-                alt={recipe.title}
-              />              <RecipeInfo>
-                <h3>{recipe.title}</h3>
-                <p>{recipe.description}</p>
-              </RecipeInfo>
-            </RecipeCard>
-          ))}
-        </FeaturedRecipes>
+  {(featuredRecipes && Array.isArray(featuredRecipes) ? featuredRecipes.slice(0, 6) : []).map(recipe => (
+    <RecipeCard key={recipe.id} onClick={() => window.location.href = `/recipes/${recipe.id}`}>
+      <RecipeImage
+        src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/300x200'}
+        alt={recipe.title}
+      />
+      <RecipeInfo>
+        <h3>{recipe.title}</h3>
+        <p>{recipe.description}</p>
+      </RecipeInfo>
+    </RecipeCard>
+  ))}
+</FeaturedRecipes>
 
         <TestimonialsContainer>
       <TestimonialHeading>What Our Users Say</TestimonialHeading>
