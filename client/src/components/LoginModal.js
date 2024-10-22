@@ -3,14 +3,15 @@ import Modal from 'react-modal';
 import styled from 'styled-components';
 import axios from 'axios';
 import RegisterModal from './RegisterModal';
+import OtpModal from './OtpModal'; // Import OtpModal
 
 // Styled Components
 const ModalContent = styled.div`
-  padding: 1.5rem;
-  background-color: rgba(255, 255, 255, 0.9); /* Set a transparent white background */
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 8px;
-  width: 80vw;
-  height: 80vh;
+  width: 50vw;
+  height: 50vw;
   max-width: 400px;
   max-height: 400px;
   box-sizing: border-box;
@@ -23,12 +24,12 @@ const ModalContent = styled.div`
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 1px;
+  right: 1px;
   background: transparent;
   border: none;
   color: #28a745;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   cursor: pointer;
 
   &:hover {
@@ -43,9 +44,9 @@ const Title = styled.h2`
 `;
 
 const Logo = styled.img`
-  width: 30%; /* Adjust the size of the logo */
-  max-width: 200px; /* Maximum width */
-  margin-bottom: 1rem; /* Space below the logo */
+  width: 30%;
+  max-width: 200px;
+  margin-bottom: 1rem;
 `;
 
 const Form = styled.form`
@@ -61,7 +62,6 @@ const Input = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   width: 100%;
-  box-sizing: border-box;
 `;
 
 const Button = styled.button`
@@ -115,7 +115,9 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
   const [success, setSuccess] = useState('');
   const [closing, setClosing] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [isOtpModalOpen, setIsOtpModalOpen] = useState(false); // State for OTP modal
   const API_BASE_URL = process.env.REACT_APP_API_URL;
+
   // Function to open the register modal and close the login modal
   const openRegisterModal = () => {
     setIsRegisterModalOpen(true);
@@ -149,12 +151,12 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
       });
 
       const { token, user } = response.data;
-      console.log('Login successful:', user);
 
+      // Store user info
       sessionStorage.setItem('user', JSON.stringify(user));
       sessionStorage.setItem('name', user.name);
-      sessionStorage.setItem('email', user.email); // Save user info in session storage
-      sessionStorage.setItem('token', token); // Save JWT token in session storage
+      sessionStorage.setItem('email', user.email);
+      sessionStorage.setItem('token', token);
       setSuccess('Login successful!');
       setClosing(true);
 
@@ -164,8 +166,18 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
       }, 2000);
 
     } catch (error) {
-      setError('Invalid email or password');
-      console.error('Login failed:', error.response ? error.response.data : error.message);
+      // Handle the error response
+      if (error.response?.status === 403) {
+        // If user is not active, open the OTP modal
+        setError(error.response?.data?.message || 'Account is not activated yet ');
+        console.log(error.response?.data?.message);
+        setIsOtpModalOpen(true);
+
+        onRequestClose(); // Close the login modal
+      } else {
+        setError(error.response?.data?.message || 'Invalid email or password');
+        console.error('Login failed:', error.response ? error.response.data : error.message);
+      }
     }
   };
 
@@ -189,14 +201,14 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
             margin: 'auto',
             width: '80vw',
             height: '80vh',
-            maxWidth: '400px',
-            maxHeight: '400px',
+            maxWidth: '450px',
+            maxHeight: '450px',
           },
         }}
       >
         <ModalContent>
           <CloseButton onClick={() => !closing && onRequestClose()}>&times;</CloseButton>
-          <Logo src="/logo_grey.png" alt="Logo" /> {/* Add logo here */}
+          <Logo src="/logo_grey.png" alt="Logo" />
           <Title>Login</Title>
           {success && <SuccessMessage>{success}</SuccessMessage>}
           {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -228,6 +240,16 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
       
       {/* Render the RegisterModal */}
       <RegisterModal isOpen={isRegisterModalOpen} onRequestClose={closeRegisterModal} />
+      
+      {/* Render the OtpModal for account activation */}
+      <OtpModal 
+        isOpen={isOtpModalOpen} 
+        onRequestClose={() => {
+          setIsOtpModalOpen(false);
+          onRequestClose(); // Optionally close login modal as well
+        }} 
+        email={email} // Pass the email for OTP verification
+      />
     </>
   );
 };

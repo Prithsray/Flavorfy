@@ -9,6 +9,8 @@ const registerRoutes = require('./routes/register');
 const loginRoutes = require('./routes/login');
 const profileRoutes = require('./routes/profile');
 const searchRoutes = require('./routes/search');
+const otpRoutes=require('./routes/otp')
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -34,6 +36,7 @@ app.use('/api/register', registerRoutes);
 app.use('/api/login', loginRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/otp', otpRoutes);
 
 // Start server
 app.listen(PORT, '0.0.0.0', () => {

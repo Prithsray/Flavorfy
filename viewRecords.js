@@ -4,13 +4,17 @@ const { PrismaClient } = require('@prisma/client');
 // Instantiate Prisma Client
 const prisma = new PrismaClient();
 
-// Fetch all users
+// Delete the user with id:5
 async function main() {
   try {
-    const users = await prisma.user.findMany();
-    console.log(users); // This will display all users in the console
+    const deleteUser = await prisma.user.delete({
+      where: {
+        id: 30,
+      },
+    });
+    console.log('Deleted User:', deleteUser); // This will display the deleted user's details
   } catch (error) {
-    console.error('Error fetching users:', error);
+    console.error('Error deleting user:', error);
   } finally {
     await prisma.$disconnect();
   }

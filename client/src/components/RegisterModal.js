@@ -1,12 +1,17 @@
+// RegisterModal.js
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 import axios from 'axios';
+import OtpModal from './OtpModal'; // Import the OtpModal
+
+// Global variable to store email
+let globalEmail = null;
 
 // Styled Components
 const ModalContent = styled.div`
   padding: 2rem;
-  background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 8px;
   width: 50vw;
   height: 50vw;
@@ -20,21 +25,6 @@ const ModalContent = styled.div`
   position: relative;
 `;
 
-const CloseButton = styled.button`
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background: transparent;
-  border: none;
-  color: #28a745;
-  font-size: 1.5rem;
-  cursor: pointer;
-
-  &:hover {
-    color: #218838;
-  }
-`;
-
 const Title = styled.h2`
   margin-bottom: 1rem;
   color: #28a745;
@@ -42,9 +32,9 @@ const Title = styled.h2`
 `;
 
 const Logo = styled.img`
-  width: 30%; /* Adjust the size of the logo */
-  max-width: 200px; /* Maximum width */
-  margin-bottom: 1rem; /* Space below the logo */
+  width: 30%;
+  max-width: 200px;
+  margin-bottom: 1rem;
 `;
 
 const Form = styled.form`
@@ -78,6 +68,17 @@ const Button = styled.button`
   }
 `;
 
+const CloseButton = styled.button`
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  background: none;
+  border: none;
+  color: #28a745;
+  font-size: 1.8rem;
+  cursor: pointer;
+`;
+
 const ErrorMessage = styled.p`
   color: #dc3545;
   margin: 1rem 0;
@@ -95,102 +96,107 @@ const RegisterModal = ({ isOpen, onRequestClose }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // State for error messages
-  const [success, setSuccess] = useState(''); // State for success messages
-  const [closing, setClosing] = useState(false); // State to handle modal closing
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [showOtpModal, setShowOtpModal] = useState(false); // State for OTP modal visibility
   const API_BASE_URL = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Clear previous error message
-    setSuccess(''); // Clear previous success message
+    setError('');
+    setSuccess('');
 
     const formData = { name, email, password };
 
     try {
+      // Register the user
       await axios.post(`${API_BASE_URL}/api/register`, formData, {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
       setName('');
       setEmail('');
       setPassword('');
-      setSuccess('Registration successful!'); // Set success message
-      setClosing(true); // Set closing state to true
+      setSuccess('Registration successful! Please check your email for the OTP.');
 
-      // Close the modal after a delay to show success message
-      setTimeout(() => {
-        onRequestClose();
-        window.location.reload();
-      }, 2000); // Adjust the delay as needed
+      // Store the email in the global variable
+      globalEmail = email;
+
+      // Close RegisterModal and open OtpModal
+      onRequestClose(); // Close RegisterModal
+      setShowOtpModal(true); // Open OTP modal
 
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
-      setError(errorMessage); // Set error message from backend
-      console.error('Registration failed:', errorMessage);
+      setError(errorMessage);
     }
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={() => !closing && onRequestClose()} // Ensure modal is not closed before success message
-      ariaHideApp={false}
-      style={{
-        overlay: {
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        },
-        content: {
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          border: 'none',
-          borderRadius: '8px',
-          padding: '0',
-          margin: 'auto',
-          width: '50vw',
-          height: '50vw',
-          maxWidth: '400px',
-          maxHeight: '400px',
-        },
-      }}
-    >
-      <ModalContent>
-        <CloseButton onClick={() => !closing && onRequestClose()}>&times;</CloseButton>
-        <Logo src="/logo_grey.png" alt="Logo" /> {/* Add logo here */}
-        <Title>Register</Title>
-        {success && <SuccessMessage>{success}</SuccessMessage>}
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-        <Form onSubmit={handleSubmit}>
-          <Input 
-            type="text" 
-            name="name" 
-            placeholder="Name" 
-            value={name} 
-            onChange={(e) => setName(e.target.value)} 
-            required 
-          />
-          <Input 
-            type="email" 
-            name="email" 
-            placeholder="Email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            required 
-          />
-          <Input 
-            type="password" 
-            name="password" 
-            placeholder="Password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
-          />
-          <Button type="submit">Register</Button>
-        </Form>
-      </ModalContent>
-    </Modal>
+    <>
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={onRequestClose}
+        ariaHideApp={false}
+        style={{
+          overlay: {
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          },
+          content: {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '0',
+            margin: 'auto',
+            width: '50vw',
+            height: '50vw',
+            maxWidth: '450px',
+            maxHeight: '450px',
+          },
+        }}
+      >
+        <ModalContent>
+          <CloseButton onClick={onRequestClose}>×</CloseButton> {/* Close Button */}
+          <Logo src="/logo_grey.png" alt="Logo" />
+          <Title>Registration</Title>
+          {success && <SuccessMessage>{success}</SuccessMessage>}
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+          <Form onSubmit={handleSubmit}>
+            <Input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+            <Input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <Button type="submit">Register</Button>
+          </Form>
+        </ModalContent>
+      </Modal>
+
+      {/* OTP Modal */}
+      {showOtpModal && <OtpModal isOpen={showOtpModal} onRequestClose={() => setShowOtpModal(false)} email={globalEmail} />}
+    </>
   );
 };
 
