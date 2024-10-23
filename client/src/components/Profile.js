@@ -132,6 +132,7 @@ const Profile = () => {
       });
       setIsEditing(false);
       setNewProfilePicture(null); // Reset profile picture state after saving
+      alert('Profile Updated successfully');
     } catch (error) {
       console.error('Error updating profile:', error);
     }
@@ -153,7 +154,7 @@ const Profile = () => {
       <Header />
       <ProfileContainer>
         <ProfileHeader>
-          <ProfilePicture src={`${API_BASE_URL}${userData.profilePicture}`||'https://via.placeholder.com/100'} alt="Profile Picture" />
+          <ProfilePicture src={`${userData.profilePicture}`||'https://via.placeholder.com/100'} alt="Profile Picture" />
           <ProfileDetails>
             <ProfileTitle>{userData.name}</ProfileTitle>
             <ProfileSubtitle>@{userData.name || 'johndoe'}</ProfileSubtitle>
@@ -190,7 +191,7 @@ const Profile = () => {
               <Label>Profile Picture:</Label>
               {userData.profilePicture && (
                 <>
-                  <ProfilePicture src={`${API_BASE_URL}${userData.profilePicture}`} alt="Current Profile Picture" />
+                  <ProfilePicture src={`${userData.profilePicture}`} alt="Current Profile Picture" />
                   <Content>Current Profile Picture</Content>
                 </>
               )}

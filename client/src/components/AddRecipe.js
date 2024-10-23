@@ -93,6 +93,8 @@ const AddRecipe = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    const email = sessionStorage.getItem('email'); // Get email from sessionStorage
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('ingredients', ingredients);
@@ -106,6 +108,7 @@ const AddRecipe = () => {
       await axios.post(`${API_BASE_URL}/api/recipes`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Email': email, // Send email in the headers
         },
       });
       setTitle('');

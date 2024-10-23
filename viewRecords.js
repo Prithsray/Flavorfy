@@ -4,17 +4,13 @@ const { PrismaClient } = require('@prisma/client');
 // Instantiate Prisma Client
 const prisma = new PrismaClient();
 
-// Delete the user with id:5
+// Fetch all records from the recipe table
 async function main() {
   try {
-    const deleteUser = await prisma.user.delete({
-      where: {
-        id: 30,
-      },
-    });
-    console.log('Deleted User:', deleteUser); // This will display the deleted user's details
+    const allRecipes = await prisma.recipe.findMany();
+    console.log('All Recipes:', allRecipes); // This will display all recipes
   } catch (error) {
-    console.error('Error deleting user:', error);
+    console.error('Error fetching recipes:', error);
   } finally {
     await prisma.$disconnect();
   }

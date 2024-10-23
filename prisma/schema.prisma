@@ -34,4 +34,6 @@ model Recipe {
   instructions String
   image       String?  // Optional field for storing image URL or path
   videoLink   String?  // Optional field for storing YouTube video link
+  email       String?   // Field to store the email of the user who created the recipe
 }
+

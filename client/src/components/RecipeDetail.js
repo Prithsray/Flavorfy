@@ -76,16 +76,24 @@ const BackButton = styled.a`
   }
 `;
 
+const PostedByText = styled.p`
+  font-size: 0.875rem; /* Smaller font size */
+  color: #888; /* Lighter color for the email */
+  text-align: right; /* Align text to the right */
+  margin-top: 0.9rem; /* Add some space above */
+`;
+
 const RecipeDetail = () => {
   const { id } = useParams();
-  const [recipe, setRecipe] = useState({});
+  const [recipeData, setRecipeData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const API_BASE_URL = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     axios.get(`${API_BASE_URL}/api/recipes/${id}`)
       .then(response => {
-        setRecipe(response.data);
+        setRecipeData(response.data); // Set the entire response
         setLoading(false);
       })
       .catch(error => {
@@ -110,12 +118,15 @@ const RecipeDetail = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
+  // Destructure recipe and user from recipeData
+  const { recipe, user } = recipeData;
+
   return (
     <>
       <Header />
       <RecipeDetailContainer>
         <RecipeImage
-          src={recipe.image ? `${API_BASE_URL}${recipe.image}` : 'https://via.placeholder.com/800x400'}
+          src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/800x400'}
           alt={recipe.title}
         />
         <RecipeContent>
@@ -135,6 +146,8 @@ const RecipeDetail = () => {
               <VideoPlayer src={getEmbedUrl(recipe.videoLink)} allowFullScreen title="Cooking Video" />
             </RecipeSection>
           )}
+          {/* Display the user information */}
+          <PostedByText>Posted By: {user.name}</PostedByText>
           <BackButton href="/recipes">Back to Recipes</BackButton>
         </RecipeContent>
       </RecipeDetailContainer>

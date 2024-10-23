@@ -114,7 +114,7 @@ const SearchResults = () => {
             results.map(recipe => (
               <RecipeCard key={recipe.id}>
                 <RecipeImage
-                  src={recipe.image ? `${API_BASE_URL}${recipe.image}` : 'https://via.placeholder.com/300x200'}
+                  src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/300x200'}
                   alt={recipe.title}
                 />
                 <RecipeContent>

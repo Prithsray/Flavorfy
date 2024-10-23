@@ -1,21 +1,20 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const cloudinary = require('cloudinary').v2; // Import Cloudinary SDK
 const router = express.Router();
 const prisma = require('../prismaClient');
+require('dotenv').config(); // Load environment variables
 
-// Set up multer for file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Specify the upload folder
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname)); // Append the original file extension
-  }
+// Set up Cloudinary with credentials
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const upload = multer({ storage });
+// Set up multer for file uploads (in-memory storage to stream directly to Cloudinary)
+const upload = multer({ storage: multer.memoryStorage() });
 
 // GET profile data
 router.get('/', async (req, res) => {
@@ -24,7 +23,7 @@ router.get('/', async (req, res) => {
 
   try {
     const user = await prisma.user.findUnique({
-      where: { email } // Use email to find the user
+      where: { email }, // Use email to find the user
     });
     console.log(user);
     if (!user) {
@@ -47,20 +46,43 @@ router.put('/', upload.single('profilePicture'), async (req, res) => {
     bio,
   };
 
-  // If a new profile picture was uploaded, add it to the update data
+  // If a new profile picture was uploaded, upload to Cloudinary and save the URL
   if (req.file) {
     console.log(req.file);
 
-    // Construct the file path for the profile picture similar to how it's done for the recipe image
-    updateData.profilePicture = `/uploads/${req.file.filename}`; // Assuming '/uploads/' is the correct public path for your images
+    try {
+      // Upload the file to Cloudinary
+      const uploadResult = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'profiles', // Optionally specify a folder in Cloudinary
+            resource_type: 'image', // Specify the resource type
+          },
+          (error, result) => {
+            if (error) {
+              return reject(new Error('Error uploading to Cloudinary: ' + error.message));
+            }
+            resolve(result);
+          }
+        );
+        uploadStream.end(req.file.buffer); // Pipe the file buffer to the upload stream
+      });
+
+      // Set the profile picture URL in the update data
+      updateData.profilePicture = uploadResult.secure_url;
+    } catch (error) {
+      console.error('Error uploading profile picture to Cloudinary:', error);
+      return res.status(500).json({ message: 'Error uploading profile picture' });
+    }
   }
 
   console.log(email);
-  
+
   try {
+    // Update the user profile in the database
     const user = await prisma.user.update({
       where: { email }, // Use email to update the user
-      data: updateData, // Update the bio and potentially the profile picture
+      data: updateData, // Update the bio and profile picture URL if present
     });
 
     res.json({ message: 'Profile updated successfully', user });
@@ -69,6 +91,5 @@ router.put('/', upload.single('profilePicture'), async (req, res) => {
     res.status(500).json({ message: 'Error updating profile' });
   }
 });
-
 
 module.exports = router;
