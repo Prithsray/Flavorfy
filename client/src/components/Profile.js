@@ -131,7 +131,8 @@ const Profile = () => {
         withCredentials: true,
       });
       setIsEditing(false);
-      setNewProfilePicture(null); // Reset profile picture state after saving
+      setNewProfilePicture(null);
+      window.location.reload(); // Reset profile picture state after saving
       alert('Profile Updated successfully');
     } catch (error) {
       console.error('Error updating profile:', error);
