@@ -24,7 +24,7 @@ async function updateRecipeImages() {
       const publicUrl = resource.secure_url; // Get the secure URL for the image
 
       // Log the public URL
-      console.log(`Public URL for file '${fileName}':`, publicUrl);
+      //console.log(`Public URL for file '${fileName}':`, publicUrl);
 
       // Example: Uncomment the following lines to update the recipe in the database
       /*
