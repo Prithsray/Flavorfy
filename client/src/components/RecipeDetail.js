@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Redirect } from 'react-router-dom'; // Import Redirect
 import axios from 'axios';
 import Header from './Header';
 import styled from 'styled-components';
@@ -93,11 +93,24 @@ const RecipeDetail = () => {
   useEffect(() => {
     axios.get(`${API_BASE_URL}/api/recipes/${id}`)
       .then(response => {
+        //console.log(response.data);
+        const recipe = response.data.recipe;
+
+        // Check visibility
+        if (!recipe) {
+          alert('This recipe does not exist.');
+          window.location.href = '/recipes';
+          setLoading(false);
+          return;
+        }
+
         setRecipeData(response.data); // Set the entire response
         setLoading(false);
       })
       .catch(error => {
         console.error('Error fetching recipe:', error);
+        alert("Recipe doesn't exist.");
+        window.location.href = '/recipes';
         setError('Failed to fetch recipe');
         setLoading(false);
       });

@@ -1,56 +1,26 @@
-const prisma = require('./prismaClient'); // Adjust the path as necessary
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
-// Example data: replace this with your actual data
-const emails = [
- 
-  { id: 4, email:'prithsray@gmail.com' },
-
-  { id: 5, email: 'prithsray@gmail.com' },
-
-  { id: 6, email: 'prithsray@gmail.com' },
-
-  { id: 7,email: 'prithsray@gmail.com'  },
-
-  { id: 8, email: 'prithsray@gmail.com' },
-
-  { id: 9, email: 'prithsray@gmail.com' },
-
-  { id: 10, email: 'prithsray@gmail.com' },
-
-  { id: 11, email: 'prithsray@gmail.com' },
-  { id: 12, email: 'prithsray@gmail.com' },
-
-  { id: 13, email: 'prithsray@gmail.com' },
-  { id: 14, email: 'prithsray@gmail.com' },
-
-  { id: 21,email: 'prithsray@gmail.com' },
-
-
+async function updateExistingRecords() {
   
-  
-  // Add more records as necessary
-];
 
-async function updateVideoLinks() {
-  for (const { id, email } of emails) {
-    try {
-      await prisma.recipe.update({
-        where: { id },
-        data: { email }, // Update the videoLink field
-      });
-      console.log(`Updated recipe with ID ${id} to include video link: ${email}`);
-    } catch (error) {
-      console.error(`Error updating recipe with ID ${id}:`, error);
+  await prisma.recipe.updateMany({
+    where: {
+      visibility: null
+    },
+    data: {
+      visibility: 'PUBLIC'
     }
-  }
+  });
+
+  console.log('Updated existing records with default email and createdAt date.');
 }
 
-updateVideoLinks()
-  .then(() => {
-    console.log('Video link update complete.');
-    prisma.$disconnect(); // Disconnect from the database
+updateExistingRecords()
+  .catch(e => {
+    console.error(e);
+    process.exit(1);
   })
-  .catch((error) => {
-    console.error('Error during update:', error);
-    prisma.$disconnect(); // Disconnect from the database on error
+  .finally(async () => {
+    await prisma.$disconnect();
   });

@@ -5,27 +5,40 @@ import axios from 'axios';
 import RegisterModal from './RegisterModal';
 import OtpModal from './OtpModal'; // Import OtpModal
 
-// Styled Components
+// Styled Components with Responsive Design
 const ModalContent = styled.div`
   padding: 2rem;
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 8px;
   width: 50vw;
   height: 50vw;
-  max-width: 400px;
-  max-height: 400px;
+  max-width: 420px;
+  max-height: 420px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
+
+  @media (max-width: 768px) {
+    width: 80vw;
+    height: auto;
+    max-width: 360px;
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    width: 90vw;
+    height: auto;
+    padding: 1rem;
+  }
 `;
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 1px;
-  right: 1px;
+  top: 10px;
+  right: 10px;
   background: transparent;
   border: none;
   color: #28a745;
@@ -41,12 +54,21 @@ const Title = styled.h2`
   margin-bottom: 1rem;
   color: #28a745;
   text-align: center;
+  font-size: 1.5rem;
+
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const Logo = styled.img`
   width: 30%;
   max-width: 200px;
   margin-bottom: 1rem;
+
+  @media (max-width: 480px) {
+    width: 50%;
+  }
 `;
 
 const Form = styled.form`
@@ -62,6 +84,10 @@ const Input = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   width: 100%;
+
+  @media (max-width: 480px) {
+    padding: 0.4rem;
+  }
 `;
 
 const Button = styled.button`
@@ -107,7 +133,6 @@ const RegisterLink = styled.span`
   }
 `;
 
-// Login Modal Component
 const LoginModal = ({ isOpen, onRequestClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -115,13 +140,12 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
   const [success, setSuccess] = useState('');
   const [closing, setClosing] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-  const [isOtpModalOpen, setIsOtpModalOpen] = useState(false); // State for OTP modal
+  const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
   const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-  // Function to open the register modal and close the login modal
   const openRegisterModal = () => {
     setIsRegisterModalOpen(true);
-    onRequestClose(); // Close the LoginModal
+    onRequestClose();
   };
 
   const closeRegisterModal = () => {
@@ -147,12 +171,11 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
         headers: {
           'Content-Type': 'application/json'
         },
-        withCredentials: true // Send cookies with request
+        withCredentials: true
       });
 
       const { token, user } = response.data;
 
-      // Store user info
       sessionStorage.setItem('user', JSON.stringify(user));
       sessionStorage.setItem('name', user.name);
       sessionStorage.setItem('email', user.email);
@@ -166,17 +189,12 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
       }, 2000);
 
     } catch (error) {
-      // Handle the error response
       if (error.response?.status === 403) {
-        // If user is not active, open the OTP modal
         setError(error.response?.data?.message || 'Account is not activated yet ');
-        console.log(error.response?.data?.message);
         setIsOtpModalOpen(true);
-
-        onRequestClose(); // Close the login modal
+        onRequestClose();
       } else {
         setError(error.response?.data?.message || 'Invalid email or password');
-        console.error('Login failed:', error.response ? error.response.data : error.message);
       }
     }
   };
@@ -200,7 +218,7 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
             padding: '0',
             margin: 'auto',
             width: '80vw',
-            height: '80vh',
+            height: '60vh',
             maxWidth: '450px',
             maxHeight: '450px',
           },
@@ -238,17 +256,14 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
         </ModalContent>
       </Modal>
       
-      {/* Render the RegisterModal */}
       <RegisterModal isOpen={isRegisterModalOpen} onRequestClose={closeRegisterModal} />
-      
-      {/* Render the OtpModal for account activation */}
       <OtpModal 
         isOpen={isOtpModalOpen} 
         onRequestClose={() => {
           setIsOtpModalOpen(false);
-          onRequestClose(); // Optionally close login modal as well
+          onRequestClose();
         }} 
-        email={email} // Pass the email for OTP verification
+        email={email}
       />
     </>
   );

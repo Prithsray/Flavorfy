@@ -76,10 +76,13 @@ const RecipeList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const API_BASE_URL = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     axios.get(`${API_BASE_URL}/api/recipes`)
       .then(response => {
-        setRecipes(response.data);
+        // Filter to only include public recipes
+        const publicRecipes = response.data;
+        setRecipes(publicRecipes);
         setLoading(false);
       })
       .catch(error => {
@@ -87,7 +90,7 @@ const RecipeList = () => {
         setLoading(false);
       });
   }, []);
- 
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -115,7 +118,6 @@ const RecipeList = () => {
           )}
         </RecipeListGrid>
       </RecipeListContainer>
-    
     </>
   );
 };

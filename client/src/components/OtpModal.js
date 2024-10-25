@@ -19,18 +19,39 @@ const ModalContent = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    width: 80vw;
+    height: auto;
+    max-width: 300px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+    width: 90vw;
+    max-width: 280px;
+  }
 `;
 
 const Title = styled.h2`
   margin-bottom: 1rem;
   color: #28a745;
   text-align: center;
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const Logo = styled.img`
   width: 30%;
   max-width: 200px;
   margin-bottom: 1rem;
+
+  @media (max-width: 480px) {
+    width: 50%;
+  }
 `;
 
 const Form = styled.form`
@@ -46,6 +67,11 @@ const Input = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   width: 100%;
+
+  @media (max-width: 480px) {
+    padding: 0.4rem;
+    font-size: 0.9rem;
+  }
 `;
 
 const Button = styled.button`
@@ -62,18 +88,31 @@ const Button = styled.button`
   &:hover {
     background-color: #218838;
   }
+
+  @media (max-width: 480px) {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
 `;
 
 const ErrorMessage = styled.p`
   color: #dc3545;
   margin: 1rem 0;
   text-align: center;
+
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const SuccessMessage = styled.p`
   color: #28a745;
   margin: 1rem 0;
   text-align: center;
+
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+  }
 `;
 
 // OTP Modal Component
@@ -150,17 +189,20 @@ const OtpModal = ({ isOpen, onRequestClose, email }) => {
             borderRadius: '8px',
             padding: '0',
             margin: 'auto',
-            width: '50vw',
-            height: '50vw',
+            width: '90vw',
+            height: '110vw',
             maxWidth: '450px',
             maxHeight: '450px',
+            overflow: 'auto', // Ensure scrolling on small screens
           },
         }}
       >
         <ModalContent>
           <Logo src="/logo_grey.png" alt="Logo" />
-          <h4 >Your account is not active yet </h4><bR></bR>
-          <h6>Please Enter OTP sent to your Email to activate your account </h6><br></br>
+          <h4>Your account is not active yet</h4>
+          <br />
+          <h6>Please Enter OTP sent to your Email to activate your account</h6>
+          <br />
           {success && <SuccessMessage>{success}</SuccessMessage>}
           {error && <ErrorMessage>{error}</ErrorMessage>}
           <Form onSubmit={handleOtpSubmit}>
@@ -176,8 +218,8 @@ const OtpModal = ({ isOpen, onRequestClose, email }) => {
           </Form>
           <p style={{ marginTop: '1rem', textAlign: 'center' }}>
             {isResending ? `Resend OTP in ${resendCooldown}s` : (
-              <span 
-                style={{ color: '#28a745', cursor: 'pointer' }} 
+              <span
+                style={{ color: '#28a745', cursor: 'pointer' }}
                 onClick={handleResendOtp}
               >
                 Resend OTP
@@ -188,12 +230,12 @@ const OtpModal = ({ isOpen, onRequestClose, email }) => {
       </Modal>
 
       {/* Verification Success Modal */}
-      <VerificationSuccessModal 
-        isOpen={isVerificationSuccessOpen} 
+      <VerificationSuccessModal
+        isOpen={isVerificationSuccessOpen}
         onRequestClose={() => {
           setIsVerificationSuccessOpen(false);
           onRequestClose(); // Optionally close OTP modal as well
-        }} 
+        }}
       />
     </>
   );

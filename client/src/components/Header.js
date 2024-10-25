@@ -25,14 +25,14 @@ const MainContent = styled.div`
   align-items: center;
   width: 100%;
   max-width: 1100px;
-  justify-content: space-between;
+  gap:1.7rem;
 `;
 
 const NavList = styled.ul`
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  margin: 0;
+  margin-right: 10px;
   padding: 0;
   gap: 2rem;
 
@@ -124,9 +124,11 @@ const DropdownItem = styled.div`
 const SearchBar = styled.form`
   display: flex;
   align-items: center;
-  margin-left: 1rem;
+  margin-left: 3rem;
+  margin-right: 6rem;
+  padding-right:30px;
   width: 100%;
-  max-width: 590px;
+  max-width: 550px;
 `;
 
 const SearchInput = styled.input`
@@ -233,13 +235,7 @@ const Header = () => {
       </StyledLink>
       <MainContent>
         <BurgerIcon onClick={toggleNav} /> {/* Burger icon for mobile navigation */}
-
-        <NavList isOpen={isNavOpen}> {/* Pass isOpen to NavList */}
-          <NavItem><StyledLink to="/">Home</StyledLink></NavItem>
-          <NavItem><StyledLink to="/recipes">Recipes</StyledLink></NavItem>
-        </NavList>
-
-        <SearchBar onSubmit={handleSearchSubmit}>
+ <SearchBar onSubmit={handleSearchSubmit}>
           <SearchInput
             type="text"
             placeholder="Search Items, Recipe"
@@ -253,6 +249,12 @@ const Header = () => {
           </SearchButton>
         </SearchBar>
 
+        <NavList isOpen={isNavOpen}> {/* Pass isOpen to NavList */}
+          <NavItem><StyledLink to="/">Home</StyledLink></NavItem>
+          <NavItem><StyledLink to="/recipes">Recipes</StyledLink></NavItem>
+        </NavList>
+
+       
         <AuthNavList>
           {user ? (
             <ProfileWrapper onClick={toggleDropdown}>
@@ -261,6 +263,9 @@ const Header = () => {
               <DropdownMenu isOpen={isDropdownOpen}>
                 <Link to="/profile" style={{ textDecoration: 'none' }}>
                   <DropdownItem>Profile</DropdownItem>
+                </Link>
+                <Link to="/profile-recipe" style={{ textDecoration: 'none' }}>
+                  <DropdownItem>My Recipes</DropdownItem>
                 </Link>
                 <Link to="/add-recipe" style={{ textDecoration: 'none' }}>
                   <DropdownItem>Add Recipe</DropdownItem>

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 import axios from 'axios';
-import OtpModal from './OtpModal'; // Import the OtpModal
+import OtpModal from './OtpModal';
 
 // Global variable to store email
 let globalEmail = null;
@@ -23,18 +23,39 @@ const ModalContent = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    width: 100vw;
+    height: 130vw;
+    max-width: 350px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+    width: 100vw;
+    max-width: 300px;
+  }
 `;
 
 const Title = styled.h2`
   margin-bottom: 1rem;
   color: #28a745;
   text-align: center;
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const Logo = styled.img`
   width: 30%;
   max-width: 200px;
   margin-bottom: 1rem;
+
+  @media (max-width: 480px) {
+    width: 50%;
+  }
 `;
 
 const Form = styled.form`
@@ -50,6 +71,11 @@ const Input = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   width: 100%;
+
+  @media (max-width: 480px) {
+    padding: 0.4rem;
+    font-size: 0.9rem;
+  }
 `;
 
 const Button = styled.button`
@@ -66,17 +92,26 @@ const Button = styled.button`
   &:hover {
     background-color: #218838;
   }
+
+  @media (max-width: 480px) {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
 `;
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 1px;
-  right: 1px;
+  top: 10px;
+  right: 10px;
   background: none;
   border: none;
   color: #28a745;
   font-size: 1.8rem;
   cursor: pointer;
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const ErrorMessage = styled.p`
@@ -151,10 +186,11 @@ const RegisterModal = ({ isOpen, onRequestClose }) => {
             borderRadius: '8px',
             padding: '0',
             margin: 'auto',
-            width: '50vw',
-            height: '50vw',
+            width: '80vw',
+            height: '60vh',
             maxWidth: '450px',
             maxHeight: '450px',
+            overflow: 'auto', // Ensure scrolling on small screens
           },
         }}
       >

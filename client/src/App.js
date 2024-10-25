@@ -8,6 +8,7 @@ import AddRecipe from './components/AddRecipe';
 import Profile from './components/Profile';
 import SearchResults from './components/SearchResults';
 import Footer from './components/Footer';
+import ProfileRecipe from './components/ProfileRecipe';
 import styled from 'styled-components';
 
 const AppContainer = styled.div`
@@ -33,6 +34,7 @@ function App() {
             <Route path="/add-recipe" element={<AddRecipe />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/search" element={<SearchResults />} />
+            <Route path="/profile-recipe" element={<ProfileRecipe />} />
           </Routes>
         </MainContent>
         <Footer />

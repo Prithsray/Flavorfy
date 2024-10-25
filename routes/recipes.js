@@ -21,7 +21,11 @@ const router = express.Router();
 // GET all recipes
 router.get('/', async (req, res) => {
   try {
-    const recipes = await prisma.recipe.findMany();
+    const recipes = await prisma.recipe.findMany({
+      where: {
+        visibility: 'PUBLIC',
+      },
+    });
     res.json(recipes);
   } catch (error) {
     console.error('Error fetching recipes:', error);
@@ -29,14 +33,17 @@ router.get('/', async (req, res) => {
   }
 });
 
+
 // GET a single recipe by ID
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
+    console.log(req.params);
     // Fetch the recipe
     const recipe = await prisma.recipe.findUnique({
-      where: { id: Number(id) }
+      where: { id: Number(id),visibility:"PUBLIC" }
     });
+    //console.log(recipe);
 
     if (recipe) {
       // Fetch the user based on the email in the recipe
@@ -55,21 +62,24 @@ router.get('/:id', async (req, res) => {
         } : null, // Handle case where user might not be found
       };
 
-      console.log(response); // For debugging
+      //console.log(response); // For debugging
       res.json(response);
     } else {
+      //console.log( res);
       res.status(404).json({ message: 'Recipe not found' });
     }
   } catch (error) {
-    console.error('Error fetching recipe:', error);
+    console.log('Error fetching recipe:', error);
     res.status(500).json({ message: 'Error fetching recipe' });
   }
 });
 
 // POST a new recipe with image upload to Cloudinary
 router.post('/', upload.single('image'), async (req, res) => {
-  const { title, ingredients, instructions, videoLink } = req.body;
-  const email = req.headers.email; // Retrieve email from request headers
+
+  console.log(req.body);
+  const { title, ingredients, instructions, videoLink, visibility } = req.body; // Include visibility
+  const email = req.headers.email;
 
   // Check for required fields
   if (!title || !ingredients || !instructions || !email) {
@@ -85,7 +95,7 @@ router.post('/', upload.single('image'), async (req, res) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           {
             folder: 'recipes', // Optionally specify a folder in Cloudinary
-            resource_type: 'image', // Specify the resource type
+            resource_type: 'image',
           },
           (error, result) => {
             if (error) {
@@ -94,22 +104,22 @@ router.post('/', upload.single('image'), async (req, res) => {
             resolve(result);
           }
         );
-        uploadStream.end(req.file.buffer); // Pipe the file buffer to the upload stream
+        uploadStream.end(req.file.buffer);
       });
 
-      // Get the secure URL from Cloudinary's result
       imageUrl = uploadResult.secure_url;
     }
 
-    // Save the recipe with image URL and email in the database
+    // Save the recipe with image URL, email, and visibility in the database
     const newRecipe = await prisma.recipe.create({
       data: {
         title,
         ingredients,
         instructions,
-        image: imageUrl, // Image URL from Cloudinary
-        videoLink, // Save video link if provided
-        email, // Save the email of the user who added the recipe
+        image: imageUrl,
+        videoLink,
+        email,
+        visibility: visibility || 'PUBLIC', // Default to PUBLIC if not provided
       },
     });
 
@@ -119,5 +129,6 @@ router.post('/', upload.single('image'), async (req, res) => {
     res.status(500).json({ message: 'Error creating recipe' });
   }
 });
+
 
 module.exports = router;

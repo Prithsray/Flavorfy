@@ -92,4 +92,107 @@ router.put('/', upload.single('profilePicture'), async (req, res) => {
   }
 });
 
+
+router.get('/recipes', async (req, res) => {
+  const { email } = req.query;
+  console.log(email);
+  try {
+    const recipes = await prisma.recipe.findMany({
+      where: { email }
+    });
+    console.log(recipes);
+    res.json(recipes);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Error fetching recipes' });
+  }
+});
+
+
+router.put('/recipes-edit/:id', async (req, res) => {
+  console.log(req.params,req.body);
+  const { id } = req.params;
+  const { title, ingredients, instructions, videoLink, email, visibility } = req.body;
+
+  try {
+    // Find the recipe to get the existing image field
+    const existingRecipe = await prisma.recipe.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!existingRecipe) {
+      return res.status(404).json({ error: 'Recipe not found' });
+    }
+
+    // Update the recipe without changing the image field
+    const updatedRecipe = await prisma.recipe.update({
+      where: { id: parseInt(id) },
+      data: {
+        title,
+        ingredients,
+        instructions,
+        videoLink,
+        email,
+        visibility,
+        createdAt: existingRecipe.createdAt, // Keep the original creation date
+      },
+    });
+
+    res.json(updatedRecipe);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while updating the recipe' });
+  }
+});
+
+router.delete('/recipes-delete', async (req, res) => {
+  console.log(req.body);
+  const { recipeIds } = req.body; // Expecting an array of recipe IDs
+
+  if (!Array.isArray(recipeIds) || recipeIds.length === 0) {
+    return res.status(400).json({ error: 'Please provide a valid array of recipe IDs.' });
+  }
+
+  try {
+    // Fetch the recipes to get image URLs
+    const recipes = await prisma.recipe.findMany({
+      where: {
+        id: { in: recipeIds.map(id => parseInt(id)) }
+      },
+      select: { id: true, image: true } // Select only id and imageUrl fields
+    });
+
+    // Delete images from Cloudinary
+    for (const recipe of recipes) {
+      const imageUrl = recipe.image;
+      if (imageUrl) {
+        // Extract the public_id from the Cloudinary URL
+        const publicId = imageUrl.split('/').slice(-1)[0].split('.')[0];
+        console.log(publicId);
+        try {
+          await cloudinary.uploader.destroy(`recipes/${publicId}`);
+          console.log(`Deleted image with public_id: recipes/${publicId}`);
+        } catch (error) {
+          console.error(`Failed to delete image: ${publicId}`, error);
+        }
+      }
+    }
+
+    // Delete recipes from the database
+    const deleteResult = await prisma.recipe.deleteMany({
+      where: {
+        id: { in: recipeIds.map(id => parseInt(id)) }
+      }
+    });
+
+    res.json({ message: `Successfully deleted ${deleteResult.count} recipes and their images.` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while deleting recipes and images' });
+  }
+});
+
+
+
+
 module.exports = router;

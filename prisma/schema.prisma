@@ -28,12 +28,16 @@ model User {
 
 
 model Recipe {
-  id          Int      @id @default(autoincrement())
-  title       String
-  ingredients String
+  id           Int      @id @default(autoincrement())
+  title        String
+  ingredients  String
   instructions String
-  image       String?  // Optional field for storing image URL or path
-  videoLink   String?  // Optional field for storing YouTube video link
-  email       String?   // Field to store the email of the user who created the recipe
+  image        String?  // Optional field for storing image URL or path
+  videoLink    String?  // Optional field for storing YouTube video link
+  email        String   // Non-optional field for storing the email of the user
+  createdAt    DateTime @default(now()) // Field to store creation date, defaulting to now
+  visibility    String?   // Field to indicate if the recipe is public or private
 }
+
+
 
