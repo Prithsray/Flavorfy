@@ -73,7 +73,7 @@ const RecipeImage = styled.img`
 
 const SearchInput = styled.input`
   width: 26%;
-  min-width: 200px;
+  min-width: 160px;
   padding: 12px;
   border: 1px solid #c4d1dc;
   border-radius: 8px;

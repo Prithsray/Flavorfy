@@ -1,207 +1,239 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import LoginModal from './LoginModal';
-// import RegisterModal from './RegisterModal';
-import { FaChevronDown, FaSearch, FaBars } from 'react-icons/fa';
+import { FaChevronDown, FaSearch, FaBars, FaTimes } from 'react-icons/fa';
 
 const HeaderContainer = styled.header`
   background-color: #343a40;
-  padding: 0.2rem 1rem;
-  height: 70px;
+  padding: 0.5rem 1rem;
   color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   position: relative;
+  z-index: 1000;
+`;
 
+const HeaderContent = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
   @media (max-width: 768px) {
-    height: auto; /* Set height to auto for smaller screens */
+    flex-wrap: wrap;
+  }
+`;
+
+const LogoAndToggle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const Logo = styled.img`
+  height: 50px;
+  width: auto;
+`;
+
+const MobileToggle = styled.button`
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  
+  @media (max-width: 768px) {
+    display: block;
   }
 `;
 
 const MainContent = styled.div`
   display: flex;
   align-items: center;
-  width: 100%;
-  max-width: 1100px;
-  gap:1.7rem;
-`;
-
-const NavList = styled.ul`
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  margin-right: 10px;
-  padding: 0;
-  gap: 2rem;
-
+  flex: 1;
+  justify-content: space-between;
+  margin-left: 2rem;
+  
   @media (max-width: 768px) {
-    display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')}; /* Show or hide based on isOpen */
-    flex-direction: column; /* Stack items vertically */
-    position: absolute; /* Position it absolutely */
-    top: 70px; /* Adjust based on header height */
-    left: 0;
-    background-color: #343a40; /* Match the header color */
-    width: 100%; /* Full width */
-    z-index: 100; /* Ensure it appears above other elements */
-  }
-`;
-
-const NavItem = styled.li`
-  margin: 0;
-
-  @media (max-width: 768px) {
-    padding: 1rem; /* Add padding for touch targets */
-  }
-`;
-
-const AuthNavList = styled.ul`
-  list-style: none;
-  display: flex;
-  margin: 0;
-  padding: 0;
-  gap: 1rem;
-  position: relative;
-
-  @media (max-width: 768px) {
-    display: none; /* Hide by default on mobile */
-  }
-`;
-
-const StyledLink = styled(Link)`
-  color: #fff;
-  text-decoration: none;
-  font-size: 1.2rem;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: #28a745;
-  }
-`;
-
-const ProfileWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  position: relative;
-  cursor: pointer;
-`;
-
-const UserName = styled.span`
-  margin-right: 0.5rem;
-`;
-
-const DropdownIcon = styled(FaChevronDown)`
-  margin-left: 0.5rem;
-  font-size: 1rem;
-  transition: transform 0.3s ease;
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0)')};
-`;
-
-const DropdownMenu = styled.div`
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
-  position: absolute;
-  top: 50px;
-  right: 0;
-  background-color: rgba(211, 211, 211, 0.9);
-  color: #000;
-  border-radius: 0.25rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 0.5rem;
-  z-index: 10;
-  min-width: 120px;
-`;
-
-const DropdownItem = styled.div`
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #f8f9fa;
+    display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
+    flex-direction: column;
+    width: 100%;
+    margin-left: 0;
+    padding-top: 1rem;
+    align-items: stretch;
   }
 `;
 
 const SearchBar = styled.form`
   display: flex;
-  align-items: center;
-  margin-left: 3rem;
-  margin-right: 6rem;
-  padding-right:30px;
+  max-width: 500px;
   width: 100%;
-  max-width: 550px;
+  margin: 0 2rem;
+  
+  @media (max-width: 768px) {
+    margin: 1rem 0;
+    order: -1;
+  }
 `;
 
 const SearchInput = styled.input`
   flex: 1;
-  padding: 0.77rem;
+  padding: 0.5rem 1rem;
   border: 1px solid #ced4da;
   border-radius: 4px 0 0 4px;
   outline: none;
   font-size: 1rem;
-  transition: border-color 0.3s ease;
-
+  
   &:focus {
     border-color: #28a745;
   }
 `;
 
 const SearchButton = styled.button`
-  padding: 0.88rem 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #28a745;
   border: none;
   border-radius: 0 4px 4px 0;
-  background-color: #28a745;
   color: white;
   cursor: pointer;
-  transition: background-color 0.3s ease;
   display: flex;
   align-items: center;
-
+  
   &:hover {
     background-color: #218838;
   }
 `;
 
-const IconWrapper = styled.span`
-  margin-right: 0.5rem;
-`;
-
-const Logo = styled.img`
-  max-height: 75px;
-  max-width: 100%;
-  margin-left: rem;
-  margin-right: 1rem;
-  align-self: center;
-`;
-
-const BurgerIcon = styled(FaBars)`
-  font-size: 1.5rem;
-  color: #fff;
-  cursor: pointer;
-  display: none;
-
+const Navigation = styled.nav`
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  
   @media (max-width: 768px) {
-    display: block; /* Show on mobile screens */
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+`;
+
+const NavList = styled.ul`
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2rem;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
+`;
+
+const NavItem = styled.li`
+  margin: 0;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+const StyledLink = styled(Link)`
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+  
+  &:hover {
+    color: #28a745;
+  }
+  
+  @media (max-width: 768px) {
+    display: block;
+    padding: 0.5rem 0;
+  }
+`;
+
+const UserSection = styled.div`
+  position: relative;
+`;
+
+const ProfileButton = styled.button`
+  background: none;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  
+  &:hover {
+    color: #28a745;
+  }
+`;
+
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  
+  @media (max-width: 768px) {
+    position: static;
+    box-shadow: none;
+    background-color: transparent;
+    min-width: 100%;
+  }
+`;
+
+const DropdownItem = styled.div`
+  padding: 0.75rem 1rem;
+  color: ${({ theme }) => theme.dark ? '#fff' : '#333'};
+  cursor: pointer;
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.dark ? '#4a4a4a' : '#f8f9fa'};
+  }
+  
+  @media (max-width: 768px) {
+    color: white;
+    padding: 0.5rem 0;
+    
+    &:hover {
+      background-color: transparent;
+      color: #28a745;
+    }
   }
 `;
 
 const Header = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  // const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isNavOpen, setIsNavOpen] = useState(false); // State for navigation visibility
+  const [isNavOpen, setIsNavOpen] = useState(false);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const storedUser = JSON.parse(sessionStorage.getItem('user'));
     setUser(storedUser);
-  }, []);
 
-  const openLoginModal = () => setIsLoginModalOpen(true);
-  const closeLoginModal = () => setIsLoginModalOpen(false);
-  // const openRegisterModal = () => setIsRegisterModalOpen(true);
-  // const closeRegisterModal = () => setIsRegisterModalOpen(false);
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     sessionStorage.removeItem('user');
@@ -213,76 +245,88 @@ const Header = () => {
     window.location.reload();
   };
 
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
-  const toggleNav = () => setIsNavOpen(!isNavOpen); // Toggle navigation visibility
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
       setSearchQuery('');
+      setIsNavOpen(false);
     }
   };
 
   return (
     <HeaderContainer>
-      <StyledLink to="/">
-        <Logo src="/logo.png" alt="Flavorfy Logo" />
-      </StyledLink>
-      <MainContent>
-        <BurgerIcon onClick={toggleNav} /> {/* Burger icon for mobile navigation */}
- <SearchBar onSubmit={handleSearchSubmit}>
-          <SearchInput
-            type="text"
-            placeholder="Search Items, Recipe"
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
-          <SearchButton type="submit">
-            <IconWrapper>
+      <HeaderContent>
+        <LogoAndToggle>
+          <Link to="/">
+            <Logo src="/logo.png" alt="Flavorfy Logo" />
+          </Link>
+          <MobileToggle onClick={() => setIsNavOpen(!isNavOpen)}>
+            {isNavOpen ? <FaTimes /> : <FaBars />}
+          </MobileToggle>
+        </LogoAndToggle>
+
+        <MainContent isOpen={isNavOpen}>
+          <SearchBar onSubmit={handleSearchSubmit}>
+            <SearchInput
+              type="text"
+              placeholder="Search Items, Recipe"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <SearchButton type="submit">
               <FaSearch />
-            </IconWrapper>
-          </SearchButton>
-        </SearchBar>
+            </SearchButton>
+          </SearchBar>
 
-        <NavList isOpen={isNavOpen}> {/* Pass isOpen to NavList */}
-          <NavItem><StyledLink to="/">Home</StyledLink></NavItem>
-          <NavItem><StyledLink to="/recipes">Recipes</StyledLink></NavItem>
-        </NavList>
+          <Navigation>
+            <NavList>
+              <NavItem>
+                <StyledLink to="/" onClick={() => setIsNavOpen(false)}>
+                  Home
+                </StyledLink>
+              </NavItem>
+              <NavItem>
+                <StyledLink to="/recipes" onClick={() => setIsNavOpen(false)}>
+                  Recipes
+                </StyledLink>
+              </NavItem>
+            </NavList>
 
-       
-        <AuthNavList>
-          {user ? (
-            <ProfileWrapper onClick={toggleDropdown}>
-              <UserName>Welcome, {user.name}</UserName>
-              <DropdownIcon isOpen={isDropdownOpen} />
-              <DropdownMenu isOpen={isDropdownOpen}>
-                <Link to="/profile" style={{ textDecoration: 'none' }}>
-                  <DropdownItem>Profile</DropdownItem>
-                </Link>
-                <Link to="/profile-recipe" style={{ textDecoration: 'none' }}>
-                  <DropdownItem>My Recipes</DropdownItem>
-                </Link>
-                <Link to="/add-recipe" style={{ textDecoration: 'none' }}>
-                  <DropdownItem>Add Recipe</DropdownItem>
-                </Link>
-                <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
-              </DropdownMenu>
-            </ProfileWrapper>
-          ) : (
-            <>
-              <NavItem><StyledLink to="#" onClick={openLoginModal}>Login/Register</StyledLink></NavItem>
-              {/* <NavItem><StyledLink to="#" onClick={openRegisterModal}>Register</StyledLink></NavItem> */}
-            </>
-          )}
-        </AuthNavList>
-      </MainContent>
-      <LoginModal isOpen={isLoginModalOpen} onRequestClose={closeLoginModal} />
-      {/* <RegisterModal isOpen={isRegisterModalOpen} onRequestClose={closeRegisterModal} /> */}
+            <UserSection ref={dropdownRef}>
+              {user ? (
+                <>
+                  <ProfileButton onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                    <span>Welcome, {user.name}</span>
+                    <FaChevronDown />
+                  </ProfileButton>
+                  <DropdownMenu isOpen={isDropdownOpen}>
+                    <Link to="/profile" style={{ textDecoration: 'none' }} onClick={() => setIsNavOpen(false)}>
+                      <DropdownItem>Profile</DropdownItem>
+                    </Link>
+                    <Link to="/profile-recipe" style={{ textDecoration: 'none' }} onClick={() => setIsNavOpen(false)}>
+                      <DropdownItem>My Recipes</DropdownItem>
+                    </Link>
+                    <Link to="/add-recipe" style={{ textDecoration: 'none' }} onClick={() => setIsNavOpen(false)}>
+                      <DropdownItem>Add Recipe</DropdownItem>
+                    </Link>
+                    <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
+                  </DropdownMenu>
+                </>
+              ) : (
+                <StyledLink to="#" onClick={() => {
+                  setIsLoginModalOpen(true);
+                  setIsNavOpen(false);
+                }}>
+                  Login/Register
+                </StyledLink>
+              )}
+            </UserSection>
+          </Navigation>
+        </MainContent>
+      </HeaderContent>
+      
+      <LoginModal isOpen={isLoginModalOpen} onRequestClose={() => setIsLoginModalOpen(false)} />
     </HeaderContainer>
   );
 };
