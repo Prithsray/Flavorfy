@@ -1,8 +1,7 @@
-// otpVerification.js
-const express = require('express');
-const prisma = require('../prismaClient');
-const bcrypt = require('bcrypt');
-const { generateOtp, sendOtpEmail } = require('../utils/otpMailer'); // Import the new module
+import express from 'express';
+import prisma from '../prismaClient.js';
+import { generateOtp, sendOtpEmail } from '../utils/otpMailer.js'; // Import the new module
+
 const router = express.Router();
 
 // POST verify OTP
@@ -44,6 +43,7 @@ router.post('/', async (req, res) => {
     }
 });
 
+// POST resend OTP
 router.post('/resend-otp', async (req, res) => {
     const { email } = req.body;
 
@@ -82,4 +82,4 @@ router.post('/resend-otp', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

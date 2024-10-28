@@ -1,5 +1,5 @@
-const express = require('express');
-const prisma = require('../prismaClient');
+import express from 'express';
+import prisma from '../prismaClient.js';
 
 const router = express.Router();
 
@@ -17,15 +17,13 @@ router.get('/', async (req, res) => {
           {
             title: {
               contains: query.toLowerCase(), // Convert query to lower case
-              // Custom filtering using the "LOWER" function
-              // Note: Using raw SQL might be necessary for case-insensitivity
+              mode: 'insensitive', // Case-insensitive search (if supported)
             },
           },
           {
             ingredients: {
               contains: query.toLowerCase(), // Convert query to lower case
-              // Custom filtering using the "LOWER" function
-              // Note: Using raw SQL might be necessary for case-insensitivity
+              mode: 'insensitive', // Case-insensitive search (if supported)
             },
           },
         ],
@@ -46,4 +44,4 @@ router.get('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

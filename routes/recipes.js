@@ -1,11 +1,14 @@
-const express = require('express');
-const prisma = require('../prismaClient'); // Assuming Prisma client setup is in this file
-const multer = require('multer');
-const cloudinary = require('cloudinary').v2; // Import Cloudinary SDK
-require('dotenv').config(); // Load environment variables
+import express from 'express';
+import prisma from '../prismaClient.js';
+import multer from 'multer';
+import cloudinary from 'cloudinary';
+import dotenv from 'dotenv';
+import { generateOtp, sendOtpEmail } from '../utils/otpMailer.js';
+
+dotenv.config(); // Load environment variables
 
 // Initialize Cloudinary with credentials
-cloudinary.config({
+cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
@@ -33,22 +36,19 @@ router.get('/', async (req, res) => {
   }
 });
 
-
 // GET a single recipe by ID
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    console.log(req.params);
     // Fetch the recipe
     const recipe = await prisma.recipe.findUnique({
-      where: { id: Number(id),visibility:"PUBLIC" }
+      where: { id: Number(id), visibility: 'PUBLIC' },
     });
-    //console.log(recipe);
 
     if (recipe) {
       // Fetch the user based on the email in the recipe
       const user = await prisma.user.findUnique({
-        where: { email: recipe.email }
+        where: { email: recipe.email },
       });
 
       // Combine the recipe and user information
@@ -58,14 +58,11 @@ router.get('/:id', async (req, res) => {
           id: user.id,
           name: user.name,
           email: user.email,
-          // Include other user fields as needed
-        } : null, // Handle case where user might not be found
+        } : null,
       };
 
-      //console.log(response); // For debugging
       res.json(response);
     } else {
-      //console.log( res);
       res.status(404).json({ message: 'Recipe not found' });
     }
   } catch (error) {
@@ -76,9 +73,7 @@ router.get('/:id', async (req, res) => {
 
 // POST a new recipe with image upload to Cloudinary
 router.post('/', upload.single('image'), async (req, res) => {
-
-  console.log(req.body);
-  const { title, ingredients, instructions, videoLink, visibility } = req.body; // Include visibility
+  const { title, ingredients, instructions, videoLink, visibility } = req.body;
   const email = req.headers.email;
 
   // Check for required fields
@@ -92,9 +87,9 @@ router.post('/', upload.single('image'), async (req, res) => {
     // Handle file upload if present
     if (req.file) {
       const uploadResult = await new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
+        const uploadStream = cloudinary.v2.uploader.upload_stream(
           {
-            folder: 'recipes', // Optionally specify a folder in Cloudinary
+            folder: 'recipes',
             resource_type: 'image',
           },
           (error, result) => {
@@ -119,7 +114,7 @@ router.post('/', upload.single('image'), async (req, res) => {
         image: imageUrl,
         videoLink,
         email,
-        visibility: visibility || 'PUBLIC', // Default to PUBLIC if not provided
+        visibility: visibility || 'PUBLIC',
       },
     });
 
@@ -130,5 +125,4 @@ router.post('/', upload.single('image'), async (req, res) => {
   }
 });
 
-
-module.exports = router;
+export default router;

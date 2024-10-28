@@ -1,6 +1,5 @@
-// otpMailer.js
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
 
 const generateOtp = () => {
     return crypto.randomBytes(3).toString('hex'); // Generate a 6-digit OTP
@@ -37,4 +36,4 @@ const sendOtpEmail = async (email, otp) => {
     }
 };
 
-module.exports = { generateOtp, sendOtpEmail };
+export { generateOtp, sendOtpEmail };

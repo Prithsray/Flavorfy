@@ -1,8 +1,8 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const prisma = require('../prismaClient'); // Import the Prisma Client
-const { generateOtp, sendOtpEmail } = require('../utils/otpMailer'); // Import the OTP mail functions
+import express from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import prisma from '../prismaClient.js'; // Import the Prisma Client
+import { generateOtp, sendOtpEmail } from '../utils/otpMailer.js'; // Import the OTP mail functions
 
 const router = express.Router();
 
@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
         }
 
         // Check if the user is active
-        if (user.isActive==false) {
+        if (user.isActive === false) {
             // Generate OTP
             const otp = generateOtp();
 
@@ -65,4 +65,4 @@ router.post('/', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

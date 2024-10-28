@@ -1,11 +1,9 @@
-// src/middleware/upload.js
-
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 // Define the upload directory path
-const uploadDir = path.join(__dirname, '../uploads');
+const uploadDir = path.join(path.resolve(), 'src/uploads');
 
 // Create the upload directory if it doesn't exist
 if (!fs.existsSync(uploadDir)) {
@@ -23,4 +21,4 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-module.exports = upload;
+export default upload;

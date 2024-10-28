@@ -1,16 +1,11 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
-const prisma = require('../prismaClient');
-const { generateOtp, sendOtpEmail } = require('../utils/otpMailer');
+import express from 'express';
+import bcrypt from 'bcrypt';
+import prisma from '../prismaClient.js';
+import { generateOtp, sendOtpEmail } from '../utils/otpMailer.js';
+
 const router = express.Router();
 
-
-console.log(process.env.EMAIL_USER,process.env.EMAIL_PASS);
-
-
-
+console.log(process.env.EMAIL_USER, process.env.EMAIL_PASS);
 
 // POST register a new user
 router.post('/', async (req, res) => {
@@ -22,7 +17,7 @@ router.post('/', async (req, res) => {
   try {
     // Check if the user already exists
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (existingUser) {
@@ -43,8 +38,8 @@ router.post('/', async (req, res) => {
         password: hashedPassword,
         bio: "None",
         otp, // Store the OTP in the database
-        isActive: false // User is inactive until OTP verification
-      }
+        isActive: false, // User is inactive until OTP verification
+      },
     });
     
     // Send OTP to the user's email
@@ -57,7 +52,4 @@ router.post('/', async (req, res) => {
   }
 });
 
-// POST resend OTP
-
-
-module.exports = router;
+export default router;
