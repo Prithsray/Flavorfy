@@ -270,7 +270,7 @@ const Header = () => {
           <SearchBar onSubmit={handleSearchSubmit}>
             <SearchInput
               type="text"
-              placeholder="Search Items, Recipe"
+              placeholder="Search Items, Recipe, People"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
