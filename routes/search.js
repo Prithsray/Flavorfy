@@ -1,5 +1,6 @@
 import express from 'express';
 import prisma from '../prismaClient.js';
+import fuzzysort from 'fuzzysort';
 
 const router = express.Router();
 
@@ -10,22 +11,15 @@ router.get('/', async (req, res) => {
   }
 
   try {
-    // Transform the query to lowercase
-    const lowerCaseQuery = query.toLowerCase();
+    // Transform and sanitize the query to lowercase and remove extra whitespace
+    const sanitizedQuery = query.trim().replace(/\s+/g, ' ').toLowerCase();
 
+    // Fetch recipes and users with partial matches to reduce database load
     const recipes = await prisma.recipe.findMany({
       where: {
         OR: [
-          {
-            title: {
-              contains: lowerCaseQuery,
-            },
-          },
-          {
-            ingredients: {
-              contains: lowerCaseQuery,
-            },
-          },
+          { title: { contains: sanitizedQuery } },
+          { ingredients: { contains: sanitizedQuery } },
         ],
       },
       select: {
@@ -39,8 +33,8 @@ router.get('/', async (req, res) => {
     const people = await prisma.user.findMany({
       where: {
         OR: [
-          { name: { contains: lowerCaseQuery } },
-          { email: { contains: lowerCaseQuery } },
+          { name: { contains: sanitizedQuery } },
+          { email: { contains: sanitizedQuery } },
         ],
       },
       select: {
@@ -51,7 +45,20 @@ router.get('/', async (req, res) => {
       },
     });
 
-    res.json({ recipes, people });
+    // Apply fuzzysort on the database results
+    const filteredRecipes = fuzzysort.go(sanitizedQuery, recipes, {
+      keys: ['title', 'ingredients'],
+      threshold: -500, // Adjusted threshold for tighter matching
+      limit: 10, // Limit for performance
+    }).map(result => result.obj);
+
+    const filteredPeople = fuzzysort.go(sanitizedQuery, people, {
+      keys: ['name', 'email'],
+      threshold: -500,
+      limit: 10,
+    }).map(result => result.obj);
+
+    res.json({ recipes: filteredRecipes, people: filteredPeople });
   } catch (error) {
     console.error('Error searching:', error);
     res.status(500).json({ message: 'Error searching' });

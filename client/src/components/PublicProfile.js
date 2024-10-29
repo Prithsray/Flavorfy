@@ -11,8 +11,9 @@ const ProfileContainer = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: #f8f9fa;
-  max-width: 600px;
+  max-width: 700px;
   margin: auto;
+  margin-buttom:2px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 `;
@@ -48,6 +49,7 @@ const ProfileDetailsContainer = styled.div`
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
+ margin-bottom:1rem;
   max-width: 500px;
 `;
 
@@ -62,7 +64,7 @@ const RecipesContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1.5rem;
-  width: 130%;
+  width: 110%;
 `;
 
 const RecipeCard = styled.div`
@@ -129,7 +131,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/profile/${userId}`);
+        const response = await axios.get(`${API_BASE_URL}/api/public-profile/${userId}`);
         setUser(response.data);
       } catch (err) {
         setError('Failed to fetch user profile');

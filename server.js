@@ -11,6 +11,7 @@ import loginRoutes from './routes/login.js';
 import profileRoutes from './routes/profile.js';
 import searchRoutes from './routes/search.js';
 import otpRoutes from './routes/otp.js';
+import publicProfileRoute from './routes/public_profile.js'
 import { admin, adminRouter, prisma } from './routes/admin.js';
 
 const app = express();
@@ -36,6 +37,7 @@ app.use('/api/recipes', recipeRoutes);
 app.use('/api/register', registerRoutes);
 app.use('/api/login', loginRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/public-profile',publicProfileRoute)
 app.use('/api/search', searchRoutes);
 app.use('/api/otp', otpRoutes);
 app.use(admin.options.rootPath, adminRouter);
