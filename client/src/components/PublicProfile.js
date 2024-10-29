@@ -143,7 +143,7 @@ const Profile = () => {
     fetchUserProfile();
   }, [userId]);
 
-  if (loading) return <LoadingText>Loading...</LoadingText>;
+ // if (loading) return <LoadingText>Loading...</LoadingText>;
   if (error) return <ErrorText>{error}</ErrorText>;
 
   return (
@@ -157,7 +157,7 @@ const Profile = () => {
         <ProfileName>{user.user.name}</ProfileName>
         <ProfileEmail>{user.user.email}</ProfileEmail>
         <ProfileDetailsContainer>
-          <ProfileDetail><strong>Bio:</strong> {user.user.bio || 'No bio available'}</ProfileDetail>
+          <ProfileDetail><strong>Bio:</strong> {user.user.bio || ''}</ProfileDetail>
         </ProfileDetailsContainer>
         <h2>Recipes</h2>
         <RecipesContainer>
@@ -170,7 +170,7 @@ const Profile = () => {
               </RecipeCard>
             ))
           ) : (
-            <p>No public recipes available.</p>
+            <p>No recipes .</p>
           )}
         </RecipesContainer>
       </ProfileContainer>

@@ -52,7 +52,15 @@ const NoResultsMessage = styled.p`
   font-size: 1.2rem;
   text-align: center;
 `;
-
+const CardBio = styled.p`
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.5rem;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
 // Recipe Card Component
 const RecipeCard = ({ recipe }) => (
   <StyledCard>
@@ -71,6 +79,7 @@ const PersonCard = ({ person }) => (
       <CardImage src={person.profilePicture || 'https://via.placeholder.com/300x200'} alt={person.name} />
       <CardContent>
         <CardTitle>{person.name}</CardTitle>
+        <CardBio>{person.bio ? `${person.bio.slice(0, 100)}...` : ''}</CardBio>
       </CardContent>
     </StyledCard>
   </Link>
@@ -151,7 +160,7 @@ const SearchResults = () => {
     }
   }, [searchQuery]);
 
-  if (loading) return <p>Loading...</p>;
+  //if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   const renderActiveTabResults = () => {

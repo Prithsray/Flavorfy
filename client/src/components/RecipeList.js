@@ -91,7 +91,7 @@ const RecipeList = () => {
       });
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  //if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   return (

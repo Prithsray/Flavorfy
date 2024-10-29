@@ -41,6 +41,7 @@ router.get('/', async (req, res) => {
         id: true,
         name: true,
         email: true,
+        bio:true,
         profilePicture: true,
       },
     });
