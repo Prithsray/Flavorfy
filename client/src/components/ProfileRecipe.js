@@ -345,16 +345,16 @@ const RecipeList = () => {
     );
   }
 
-  // if (loading) {
-  //   return (
-  //     <>
-  //       <Header />
-  //       <ProfileContainer>
-  //         <LoadingMessage>Loading your recipes...</LoadingMessage>
-  //       </ProfileContainer>
-  //     </>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <ProfileContainer>
+          <LoadingMessage>Loading your recipes...</LoadingMessage>
+        </ProfileContainer>
+      </>
+    );
+  }
 
   if (error) {
     return (

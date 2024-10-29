@@ -143,7 +143,7 @@ const Profile = () => {
     fetchUserProfile();
   }, [userId]);
 
- // if (loading) return <LoadingText>Loading...</LoadingText>;
+  if (loading) return <LoadingText>Loading...</LoadingText>;
   if (error) return <ErrorText>{error}</ErrorText>;
 
   return (
