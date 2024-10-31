@@ -25,17 +25,83 @@ router.get('/', async (req, res) => {
   console.log(email);
 
   try {
+    // Fetch the user data using email
     const user = await prisma.user.findUnique({
       where: { email }, // Use email to find the user
+      select: {
+        name: true,
+        email: true,
+        bio: true,
+        profilePicture: true,
+      },
     });
-    console.log(user);
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json(user);
+    // Fetch followers and following counts using email
+    const followersCount = await prisma.follow.count({
+      where: {
+        followingEmail: user.email, // Change to followingEmail
+      },
+    });
+
+    const followingCount = await prisma.follow.count({
+      where: {
+        followerEmail: user.email, // Change to followerEmail
+      },
+    });
+
+    // Fetch follower names using email
+    const followers = await prisma.follow.findMany({
+      where: {
+        followingEmail: user.email, // Change to followingEmail
+      },
+      select: {
+        follower: {
+          select: {
+            id: true,
+            name: true,
+            email: true, // Include email if needed
+          },
+        },
+      },
+    });
+
+    // Fetch following names using email
+    const following = await prisma.follow.findMany({
+      where: {
+        followerEmail: user.email, // Change to followerEmail
+      },
+      select: {
+        following: {
+          select: {
+            id: true,
+            name: true,
+            email: true, // Include email if needed
+          },
+        },
+      },
+    });
+
+    // Construct the response with user data
+    const response = {
+      user: {
+        name: user.name,
+        email: user.email,
+        bio: user.bio,
+        profilePicture: user.profilePicture,
+        followersCount,
+        followingCount, // Include following count
+        followers: followers.map(f => f.follower),
+        following: following.map(f => f.following),
+      },
+    };
+
+    res.json(response);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: 'Error fetching user data' });
   }
 });

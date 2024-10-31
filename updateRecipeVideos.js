@@ -1,26 +1,18 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
-async function updateExistingRecords() {
-  
-
-  await prisma.recipe.updateMany({
-    where: {
-      visibility: null
-    },
-    data: {
-      visibility: 'PUBLIC'
-    }
-  });
-
-  console.log('Updated existing records with default email and createdAt date.');
+async function main() {
+  const users = await prisma.user.findMany();
+  console.log(users);
 }
 
-updateExistingRecords()
-  .catch(e => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
+main()
+  .then(async () => {
     await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
   });

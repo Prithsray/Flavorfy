@@ -13,7 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id             Int      @id @default(autoincrement())
   name           String
@@ -21,11 +20,30 @@ model User {
   password       String
   bio            String
   profilePicture String?  // Optional profile picture field
-  isActive       Boolean  @default(false) // Add field for account activation
+  isActive       Boolean  @default(false) // Field for account activation
   otp            String?  // Field to store the OTP for email verification
+  createdAt      DateTime @default(now())  // Field to store the creation date
+
+ // Relation for users who follow this user
+  followedBy      Follow[]  @relation("Follower")
+  
+  // Relation for users that this user follows
+  follows         Follow[]  @relation("Following")
 }
 
+model Follow {
+  id               Int      @id @default(autoincrement())
+  followerEmail    String
+  followingEmail   String
 
+  // User who is following
+  follower         User     @relation("Following", fields: [followerEmail], references: [email])
+  
+  // User who is being followed
+  following        User     @relation("Follower", fields: [followingEmail], references: [email])
+
+  @@unique([followerEmail, followingEmail]) // Ensure that the combination of emails is unique
+}
 
 model Recipe {
   id           Int      @id @default(autoincrement())
@@ -39,7 +57,6 @@ model Recipe {
   visibility    String?   // Field to indicate if the recipe is public or private
 }
 
-
 model Admin {
   id       Int     @id @default(autoincrement())
   email    String  @unique
@@ -48,4 +65,5 @@ model Admin {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 

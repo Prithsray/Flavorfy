@@ -80,6 +80,7 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [newProfilePicture, setNewProfilePicture] = useState(null);
   const API_BASE_URL = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     const fetchUserData = async () => {
       const email = sessionStorage.getItem('email');
@@ -92,8 +93,9 @@ const Profile = () => {
           },
           withCredentials: true,
         });
-        setUserData(response.data);
-        setBio(response.data.bio || '');
+        console.log(response.data);
+        setUserData(response.data.user);
+        setBio(response.data.user.bio || '');
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -102,7 +104,6 @@ const Profile = () => {
     fetchUserData();
   }, []);
 
-  
   const handleBioChange = (e) => {
     setBio(e.target.value);
   };
@@ -138,7 +139,7 @@ const Profile = () => {
       console.error('Error updating profile:', error);
     }
   };
-  
+
   if (!userData) {
     return (
       <>
@@ -155,10 +156,14 @@ const Profile = () => {
       <Header />
       <ProfileContainer>
         <ProfileHeader>
-          <ProfilePicture src={`${userData.profilePicture}`||'https://via.placeholder.com/100'} alt="Profile Picture" />
+          <ProfilePicture src={`${userData.profilePicture}` || 'https://via.placeholder.com/100'} alt="Profile Picture" />
           <ProfileDetails>
             <ProfileTitle>{userData.name}</ProfileTitle>
-            <ProfileSubtitle>@{userData.name || 'johndoe'}</ProfileSubtitle>
+            <ProfileSubtitle>
+              @{userData.name || 'johndoe'} <br/><br/>
+              &nbsp;&nbsp;{userData.followersCount} Followers 
+              &nbsp;&nbsp;{userData.followingCount} Following
+            </ProfileSubtitle>
           </ProfileDetails>
         </ProfileHeader>
         <ProfileContent>
