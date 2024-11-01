@@ -160,12 +160,12 @@ const Settings = () => {
   };
 
 
-  if (!userData) {
+  if (!email) {
     return (
       <>
         <Header />
         <ProfileContainer>
-          <p>Please log in to view your profile.</p>
+          <p>Please log in to view this page.</p>
         </ProfileContainer>
       </>
     );
