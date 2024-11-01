@@ -74,6 +74,14 @@ const UpdateButton = styled.button`
   }
 `;
 
+const ProfileContainer = styled.div`
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
 // Reuse DeactivateButton for deactivation
 const DeactivateButton = styled(UpdateButton)`
   background-color: #dc3545;
@@ -150,6 +158,18 @@ const Settings = () => {
     setDarkMode((prevMode) => !prevMode);
     document.body.classList.toggle('dark-mode', !darkMode);
   };
+
+
+  if (!userData) {
+    return (
+      <>
+        <Header />
+        <ProfileContainer>
+          <p>Please log in to view your profile.</p>
+        </ProfileContainer>
+      </>
+    );
+  }
 
   return (
     <>
