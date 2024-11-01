@@ -4,6 +4,9 @@ import path from 'path';
 import cloudinary from 'cloudinary';
 import prisma from '../prismaClient.js';
 import dotenv from 'dotenv';
+import { authenticateToken } from '../middleware/auth.js';
+import bcrypt from 'bcrypt';
+
 
 dotenv.config(); // Load environment variables
 
@@ -259,4 +262,86 @@ router.delete('/recipes-delete', async (req, res) => {
   }
 });
 
+router.put('/change-password', authenticateToken, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const email = req.headers.email; // Get email from request headers
+
+  try {
+      // Find user by email
+      const user = await prisma.user.findUnique({
+          where: { email: email }
+      });
+
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Check if the current password matches
+      const match = await bcrypt.compare(currentPassword, user.password);
+      if (!match) {
+          return res.status(401).json({ message: 'Current password is incorrect' });
+      }
+
+      // Hash the new password
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+      // Update the password in the database
+      await prisma.user.update({
+          where: { email: email },
+          data: { password: hashedNewPassword }
+      });
+
+      res.json({ message: 'Password updated successfully' });
+  } catch (error) {
+      console.error('Error updating password:', error);
+      res.status(500).json({ message: 'Error updating password' });
+  }
+});
+
+// Deactivate Account Route
+router.delete('/deactivate-profile', authenticateToken, async (req, res) => {
+  const email = req.headers.email; // Get email from request headers
+
+  try {
+      // Find recipes that are currently PUBLIC
+      const publicRecipes = await prisma.recipe.findMany({
+          where: {
+               email: email , // Use email to find associated recipes
+              visibility: 'PUBLIC' // Look for PUBLIC recipes
+          }
+      });
+
+      // If any PUBLIC recipes are found, update their visibility to PRIVATE
+      if (publicRecipes.length > 0) {
+          await prisma.recipe.updateMany({
+              where: {
+                   email: email, // Only update those that are currently PUBLIC
+                  visibility: 'PUBLIC'
+              },
+              data: {
+                  visibility: 'PRIVATE' // Set visibility to PRIVATE
+              }
+          });
+      }
+
+      // Update the user's account to deactivate
+      await prisma.user.update({
+          where: { email: email },
+          data: {
+              isActive: false,
+              // Optionally reset the password or perform other clean-up actions
+          }
+      });
+
+      res.json({ message: 'Account has been deactivated.' });
+  } catch (error) {
+      console.error('Error deactivating account:', error);
+      res.status(500).json({ message: 'Error deactivating account' });
+  }
+});
+
+
 export default router;
+
+
+

@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import ProfileRecipe from './components/ProfileRecipe';
 import styled from 'styled-components';
 import PublicProfile from './components/PublicProfile';
+import Settings from './components/Settings'
 
 const AppContainer = styled.div`
   display: flex;
@@ -37,6 +38,7 @@ function App() {
             <Route path="/search" element={<SearchResults />} />
             <Route path="/profile-recipe" element={<ProfileRecipe />} />
             <Route path="/profile/:userId" element={<PublicProfile/>} />
+            <Route path="/settings" element={<Settings/>} />
 
           </Routes>
         </MainContent>

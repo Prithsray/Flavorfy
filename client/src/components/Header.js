@@ -310,6 +310,9 @@ const Header = () => {
                     <Link to="/add-recipe" style={{ textDecoration: 'none' }} onClick={() => setIsNavOpen(false)}>
                       <DropdownItem>Add Recipe</DropdownItem>
                     </Link>
+                    <Link to="/settings" style={{ textDecoration: 'none' }} onClick={() => setIsNavOpen(false)}>
+                      <DropdownItem>Settings</DropdownItem>
+                    </Link>
                     <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
                   </DropdownMenu>
                 </>

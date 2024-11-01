@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import RegisterModal from './RegisterModal';
 import OtpModal from './OtpModal'; // Import OtpModal
-
+import ForgotPasswordModal from './ForgotPasswordModal';
 // Styled Components with Responsive Design
 const ModalContent = styled.div`
   padding: 2rem;
@@ -120,6 +120,7 @@ const SuccessMessage = styled.p`
 
 const RegisterText = styled.p`
   margin-top: 1rem;
+  margin-bottom:1rem;
   text-align: center;
 `;
 
@@ -127,6 +128,19 @@ const RegisterLink = styled.span`
   color: #28a745;
   cursor: pointer;
   text-decoration: underline;
+
+  &:hover {
+    color: #218838;
+  }
+`;
+
+const ForgotPasswordLink = styled.span`
+  color: #28a745;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+  margin-bottom:1rem;
 
   &:hover {
     color: #218838;
@@ -142,6 +156,18 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
   const API_BASE_URL = process.env.REACT_APP_API_URL;
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
+
+  const openForgotPasswordModal = () => {
+    setIsForgotPasswordModalOpen(true);
+    onRequestClose();
+  };
+
+  const closeForgotPasswordModal = () => {
+    setIsForgotPasswordModalOpen(false);
+  };
+
+
 
   const openRegisterModal = () => {
     setIsRegisterModalOpen(true);
@@ -247,6 +273,9 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
               onChange={handleChange}
               required
             />
+              <ForgotPasswordLink onClick={openForgotPasswordModal}>
+            Forgot Password?
+          </ForgotPasswordLink>
             <Button type="submit">Login</Button>
           </Form>
           <RegisterText>
@@ -264,6 +293,10 @@ const LoginModal = ({ isOpen, onRequestClose }) => {
           onRequestClose();
         }} 
         email={email}
+      />
+      <ForgotPasswordModal
+        isOpen={isForgotPasswordModalOpen}
+        onRequestClose={closeForgotPasswordModal}
       />
     </>
   );

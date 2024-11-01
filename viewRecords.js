@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 // Fetch all records from the recipe table
 async function main() {
   try {
-    const allRecipes = await prisma.follow.findMany();
+    const allRecipes = await prisma.user.findMany();
     console.log('All Recipes:', allRecipes); // This will display all recipes
   } catch (error) {
     console.error('Error fetching recipes:', error);

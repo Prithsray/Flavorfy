@@ -36,8 +36,8 @@ const admin = new AdminJS({
           },
         },
         listProperties: ['id', 'name', 'email', 'isActive', 'otp'],
-        editProperties: ['name', 'email', 'password', 'bio', 'isActive', 'profilePicture', 'otp'],
-        showProperties: ['id', 'name', 'email', 'hashedPassword', 'bio', 'isActive', 'profilePicture', 'otp'],
+        editProperties: ['name', 'email', 'password', 'bio', 'isActive', 'profilePicture', 'otp','createdAt'],
+        showProperties: ['id', 'name', 'email', 'hashedPassword', 'bio', 'isActive', 'profilePicture', 'otp','createdAt'],
       },
     },
     {
