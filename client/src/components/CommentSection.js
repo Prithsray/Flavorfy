@@ -50,14 +50,14 @@ const CommentInput = styled.textarea`
 `;
 
 const SubmitButton = styled.button`
-  padding: 0.8rem 1.5rem;
+  padding: 0.37rem 0.8rem;
   color: #fff;
   background-color: #28a745;
   border: none;
   border-radius: 10px;
   cursor: pointer;
   margin-bottom:20px;
-  font-size: 1.1rem;
+  font-size: 0.8rem;
  @media (max-width: 768px) {
     padding: 0.6rem 1.2rem;
     font-size: 1rem;
@@ -71,7 +71,7 @@ const SubmitButton = styled.button`
 const Comment = styled.div`
   background-color: #ffffff;
   border-left: 4px solid #28a745;
-  padding: 1.5rem;
+  padding:0.7rem;
   margin-bottom: 1rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
@@ -99,7 +99,7 @@ const CommentContent = styled.p`
   }
 
   span {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   @media (max-width: 768px) {
@@ -135,7 +135,7 @@ const ReplyButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.75rem;
   &:hover {
     color: #0056b3;
   }
@@ -148,7 +148,7 @@ const ReplyContainer = styled.div`
   background-color: #f9f9f9;
   border-left: 3px solid #ddd;
   margin-left: 1.5rem;
-  padding: 1rem;
+  padding: 0.7rem;
   margin-top: 1rem;
   border-radius: 8px;
 `;
@@ -178,7 +178,7 @@ const ShowMoreButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.75rem;
   margin-top: 1rem;
   &:hover {
     color: #0056b3;
@@ -324,7 +324,7 @@ const CommentSection = ({ recipeId }) => {
 
   return (
     <CommentSectionWrapper>
-      <h2>Comments</h2>
+      <h3 style={{marginBottom:"20px"}}>Comment Your Experience</h3>
       <CommentInput
         value={newComment}
         onChange={(e) => setNewComment(e.target.value)}

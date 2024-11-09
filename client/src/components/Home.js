@@ -372,7 +372,7 @@ const Home = () => {
 
         <AboutUs>
           <h2>About Us</h2>
-          <p>At RecipeApp, we're passionate about helping you discover and share the best recipes. Our platform is designed to make cooking fun and easy for everyone.</p>
+          <p>At Flavorfy, we're passionate about helping you discover and share the best recipes. Our platform is designed to make cooking fun and easy for everyone.</p>
         </AboutUs>
 
        

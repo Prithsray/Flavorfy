@@ -32,14 +32,13 @@ const RecipeContent = styled.div`
 `;
 
 const Sidebar = styled.div`
-  padding: 1.5rem;
+  padding: 1rem;
   flex: 1; /* Sidebar should take less space */
   background-color: #f9f9f9;
   margin-left: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  margin-top: 2rem;
+  width: 90%;
+  margin-top: 1rem;
   @media (min-width: 768px) {
     margin-top: 0; /* No margin on larger screens */
     margin-left: 0.5rem;
@@ -47,8 +46,8 @@ const Sidebar = styled.div`
 `;
 
 const RecipeTitle = styled.h1`
-  font-size: 2.5rem;
-  margin: 0 0 1rem;
+  font-size: 1.8rem;
+  margin: 1rem 0 1rem;
   color: #333;
   text-align: center;
 `;
@@ -57,7 +56,7 @@ const RecipeSection = styled.section`
   margin-top: 2rem;
 
   h2 {
-    font-size: 1.75rem;
+    font-size: 1.3rem;
     color: #28a745;
     border-bottom: 2px solid #ddd;
     padding-bottom: 0.5rem;
@@ -73,7 +72,7 @@ const RecipeSection = styled.section`
 
 const VideoPlayer = styled.iframe`
   width: 100%;
-  height: 400px; /* Set a height for the video player */
+  height: 350px; /* Set a height for the video player */
   border: none; /* Remove border for a cleaner look */
   border-radius: 8px; /* Rounded corners */
   margin-top: 1rem; /* Add some space above the video player */
@@ -87,22 +86,33 @@ const PostedByText = styled.p`
 `;
 
 const RecipeSuggestion = styled.div`
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   text-align: center;
   flex: 1;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add shadow for a card-like effect */
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px); /* Lift up the card on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+  }
 `;
 
 const RecipeSuggestionImage = styled.img`
   width: 100%;
   height: 150px;
+  max-width:300px;
   object-fit: cover;
-  border-radius: 8px;
+  border-bottom: 1px solid #ddd;
 `;
 
 const RecipeSuggestionTitle = styled.h3`
-  font-size: 1.25rem;
+  font-size: 1rem;
   color: #333;
-  margin-top: 0.5rem;
+  margin: 1rem 0;
 `;
 
 const RecipeDetail = () => {
@@ -140,7 +150,7 @@ const RecipeDetail = () => {
       .then(response => {
         const allRecipes = response.data;
         const shuffledRecipes = allRecipes.sort(() => 0.5 - Math.random()); // Shuffle the array
-        const randomSelection = shuffledRecipes.slice(0, 5); // Get 4-5 random recipes
+        const randomSelection = shuffledRecipes.slice(0, 7); // Get 4-5 random recipes
         setRandomRecipes(randomSelection);
       })
       .catch(error => {
@@ -192,12 +202,15 @@ const RecipeDetail = () => {
         </RecipeContent>
 
         <Sidebar>
-          <h2 style={{marginBottom:"20px"}}>Some More Recipes</h2>
+          <h2 style={{ marginBottom: '20px' }}>Some More Recipes</h2>
           {randomRecipes.length > 0 ? (
             randomRecipes.map((suggestedRecipe) => (
               <Link to={`/recipes/${suggestedRecipe.id}`} key={suggestedRecipe.id} style={{ textDecoration: 'none' }}>
                 <RecipeSuggestion>
-                  <RecipeSuggestionImage src={suggestedRecipe.image || 'https://via.placeholder.com/200'} alt={suggestedRecipe.title} />
+                  <RecipeSuggestionImage
+                    src={suggestedRecipe.image || 'https://via.placeholder.com/200'}
+                    alt={suggestedRecipe.title}
+                  />
                   <RecipeSuggestionTitle>{suggestedRecipe.title}</RecipeSuggestionTitle>
                 </RecipeSuggestion>
               </Link>
