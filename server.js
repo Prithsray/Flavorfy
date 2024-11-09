@@ -13,6 +13,7 @@ import searchRoutes from './routes/search.js';
 import otpRoutes from './routes/otp.js';
 import publicProfileRoute from './routes/public_profile.js'
 import { admin, adminRouter, prisma } from './routes/admin.js';
+import commentRoutes from './routes/comments.js'
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -40,6 +41,7 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/public-profile',publicProfileRoute)
 app.use('/api/search', searchRoutes);
 app.use('/api/otp', otpRoutes);
+app.use('/api/comments', commentRoutes);
 app.use(admin.options.rootPath, adminRouter);
 
 // Start server

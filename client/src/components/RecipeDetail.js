@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Redirect } from 'react-router-dom'; // Import Redirect
+import { useParams, Link } from 'react-router-dom'; // Using Link for navigation
 import axios from 'axios';
 import Header from './Header';
+import CommentSection from './CommentSection';
 import styled from 'styled-components';
 
 const RecipeDetailContainer = styled.div`
   padding: 2rem;
-  max-width: 1000px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  max-width: 1200px;
   margin: auto;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap; /* Allow items to wrap on small screens */
 `;
 
 const RecipeImage = styled.img`
@@ -24,6 +26,24 @@ const RecipeImage = styled.img`
 
 const RecipeContent = styled.div`
   padding: 1.5rem;
+  flex: 3; /* Allow content to take more space */
+  max-width: 800px;
+  width: 100%;
+`;
+
+const Sidebar = styled.div`
+  padding: 1.5rem;
+  flex: 1; /* Sidebar should take less space */
+  background-color: #f9f9f9;
+  margin-left: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin-top: 2rem;
+  @media (min-width: 768px) {
+    margin-top: 0; /* No margin on larger screens */
+    margin-left: 0.5rem;
+  }
 `;
 
 const RecipeTitle = styled.h1`
@@ -59,52 +79,52 @@ const VideoPlayer = styled.iframe`
   margin-top: 1rem; /* Add some space above the video player */
 `;
 
-const BackButton = styled.a`
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  margin-top: 2rem;
-  font-size: 1rem;
-  color: #fff;
-  background-color: #28a745;
-  border-radius: 8px;
-  text-align: center;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #218838;
-  }
+const PostedByText = styled.p`
+  font-size: 0.875rem;
+  color: #888;
+  text-align: right;
+  margin-top: 0.9rem;
 `;
 
-const PostedByText = styled.p`
-  font-size: 0.875rem; /* Smaller font size */
-  color: #888; /* Lighter color for the email */
-  text-align: right; /* Align text to the right */
-  margin-top: 0.9rem; /* Add some space above */
+const RecipeSuggestion = styled.div`
+  margin-bottom: 1.5rem;
+  text-align: center;
+  flex: 1;
+`;
+
+const RecipeSuggestionImage = styled.img`
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+`;
+
+const RecipeSuggestionTitle = styled.h3`
+  font-size: 1.25rem;
+  color: #333;
+  margin-top: 0.5rem;
 `;
 
 const RecipeDetail = () => {
   const { id } = useParams();
   const [recipeData, setRecipeData] = useState(null);
+  const [randomRecipes, setRandomRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const API_BASE_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
+    // Fetch the specific recipe details
     axios.get(`${API_BASE_URL}/api/recipes/${id}`)
       .then(response => {
-        //console.log(response.data);
         const recipe = response.data.recipe;
-
-        // Check visibility
         if (!recipe) {
           alert('This recipe does not exist.');
           window.location.href = '/recipes';
           setLoading(false);
           return;
         }
-
-        setRecipeData(response.data); // Set the entire response
+        setRecipeData(response.data);
         setLoading(false);
       })
       .catch(error => {
@@ -114,16 +134,27 @@ const RecipeDetail = () => {
         setError('Failed to fetch recipe');
         setLoading(false);
       });
+
+    // Fetch all recipes to display random ones
+    axios.get(`${API_BASE_URL}/api/recipes`)
+      .then(response => {
+        const allRecipes = response.data;
+        const shuffledRecipes = allRecipes.sort(() => 0.5 - Math.random()); // Shuffle the array
+        const randomSelection = shuffledRecipes.slice(0, 5); // Get 4-5 random recipes
+        setRandomRecipes(randomSelection);
+      })
+      .catch(error => {
+        console.error('Error fetching recipes:', error);
+      });
   }, [id]);
 
   const getEmbedUrl = (url) => {
     const videoId = url.split('v=')[1];
     if (videoId) {
       const ampersandPosition = videoId.indexOf('&');
-      if (ampersandPosition !== -1) {
-        return `https://www.youtube.com/embed/${videoId.substring(0, ampersandPosition)}`;
-      }
-      return `https://www.youtube.com/embed/${videoId}`;
+      return ampersandPosition !== -1
+        ? `https://www.youtube.com/embed/${videoId.substring(0, ampersandPosition)}`
+        : `https://www.youtube.com/embed/${videoId}`;
     }
     return '';
   };
@@ -131,18 +162,14 @@ const RecipeDetail = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
-  // Destructure recipe and user from recipeData
   const { recipe, user } = recipeData;
 
   return (
     <>
       <Header />
       <RecipeDetailContainer>
-        <RecipeImage
-          src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/800x400'}
-          alt={recipe.title}
-        />
         <RecipeContent>
+          <RecipeImage src={recipe.image ? recipe.image : 'https://via.placeholder.com/800x400'} alt={recipe.title} />
           <RecipeTitle>{recipe.title}</RecipeTitle>
           <RecipeSection>
             <h2>Ingredients</h2>
@@ -155,16 +182,31 @@ const RecipeDetail = () => {
           {recipe.videoLink && (
             <RecipeSection>
               <h2>How to cook</h2>
-              {/* Embed the video using an iframe */}
               <VideoPlayer src={getEmbedUrl(recipe.videoLink)} allowFullScreen title="Cooking Video" />
             </RecipeSection>
           )}
-          {/* Display the user information */}
           <PostedByText>Posted By: {user.name}</PostedByText>
-          <BackButton href="/recipes">Back to Recipes</BackButton>
+
+          {/* Comment section */}
+          <CommentSection recipeId={id} />
         </RecipeContent>
+
+        <Sidebar>
+          <h2 style={{marginBottom:"20px"}}>Some More Recipes</h2>
+          {randomRecipes.length > 0 ? (
+            randomRecipes.map((suggestedRecipe) => (
+              <Link to={`/recipes/${suggestedRecipe.id}`} key={suggestedRecipe.id} style={{ textDecoration: 'none' }}>
+                <RecipeSuggestion>
+                  <RecipeSuggestionImage src={suggestedRecipe.image || 'https://via.placeholder.com/200'} alt={suggestedRecipe.title} />
+                  <RecipeSuggestionTitle>{suggestedRecipe.title}</RecipeSuggestionTitle>
+                </RecipeSuggestion>
+              </Link>
+            ))
+          ) : (
+            <p>No suggestions available</p>
+          )}
+        </Sidebar>
       </RecipeDetailContainer>
-      {/* <Footer /> */}
     </>
   );
 };

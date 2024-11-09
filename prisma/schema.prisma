@@ -67,3 +67,14 @@ model Admin {
 }
 
 
+
+model Comment {
+  id           Int      @id @default(autoincrement())
+  content      String
+  userEmail    String   // Stores email of the user who posted the comment
+  recipeId     Int      // Stores recipe ID associated with the comment
+  parentId     Int?     // Self-referencing field for nested comments
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
