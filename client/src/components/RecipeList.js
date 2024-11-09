@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from './Header';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
+
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
 
 const RecipeListContainer = styled.div`
   padding: 2rem;
@@ -23,6 +28,12 @@ const RecipeListGrid = styled.div`
   flex-wrap: wrap;
   gap: 1.5rem;
   justify-content: center;
+  transition: transform 0.5s ease;
+  ${({ animate }) =>
+    animate &&
+    css`
+      animation: ${fadeIn} 0.5s ease;
+    `}
 `;
 
 const RecipeCard = styled.div`
@@ -71,16 +82,51 @@ const RecipeLink = styled.a`
   }
 `;
 
+const PaginationButtons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+`;
+
+const PaginationButton = styled.button`
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #28a745;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #218838;
+  }
+`;
+
+const PageNumber = styled.span`
+  font-size: 1rem;
+  color: #333;
+`;
+
 const RecipeList = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(0);
+  const [animate, setAnimate] = useState(false); // Track animation
+  const recipesPerPage = 8;
   const API_BASE_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/api/recipes`)
+    axios
+      .get(`${API_BASE_URL}/api/recipes`)
       .then(response => {
-        // Filter to only include public recipes
         const publicRecipes = response.data;
         setRecipes(publicRecipes);
         setLoading(false);
@@ -89,19 +135,33 @@ const RecipeList = () => {
         setError('Failed to fetch recipes');
         setLoading(false);
       });
-  }, []);
+  }, [API_BASE_URL]);
+
+  const totalPages = Math.ceil(recipes.length / recipesPerPage);
+
+  const handlePageChange = (newPage) => {
+    setAnimate(false); // Reset animation
+    setTimeout(() => {
+      setPage(newPage);
+      setAnimate(true); // Trigger fade-in after page change
+    }, 0);
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
+
+  // Get recipes for the current page
+  const start = page * recipesPerPage;
+  const displayedRecipes = recipes.slice(start, start + recipesPerPage);
 
   return (
     <>
       <Header />
       <RecipeListContainer>
         <PageTitle>Our Recipes</PageTitle>
-        <RecipeListGrid>
-          {recipes && recipes.length > 0 ? (
-            recipes.map(recipe => (
+        <RecipeListGrid animate={animate}>
+          {displayedRecipes && displayedRecipes.length > 0 ? (
+            displayedRecipes.map(recipe => (
               <RecipeCard key={recipe.id}>
                 <RecipeImage
                   src={recipe.image ? `${recipe.image}` : 'https://via.placeholder.com/300x200'}
@@ -117,6 +177,19 @@ const RecipeList = () => {
             <p>No recipes available.</p>
           )}
         </RecipeListGrid>
+        
+        {/* Pagination buttons with page number */}
+        <PaginationButtons>
+          <PaginationButton onClick={() => handlePageChange(page - 1)} disabled={page === 0}>
+            Previous
+          </PaginationButton>
+          <PageNumber>
+            Page {page + 1} of {totalPages}
+          </PageNumber>
+          <PaginationButton onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages - 1}>
+            Next
+          </PaginationButton>
+        </PaginationButtons>
       </RecipeListContainer>
     </>
   );
