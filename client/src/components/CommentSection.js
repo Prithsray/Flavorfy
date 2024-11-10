@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const CommentSectionWrapper = styled.div`
   background-color: #f8f9fa; /* Light gray background to stand out */
@@ -203,6 +204,7 @@ const CommentSection = ({ recipeId }) => {
     setUserEmail(loggedInEmail);
     axios.get(`${API_BASE_URL}/api/comments?recipeId=${recipeId}`)
       .then(response => {
+        console.log(response.data)
         setComments(response.data);
       })
       .catch(error => console.error('Error fetching comments:', error));
@@ -270,7 +272,11 @@ const CommentSection = ({ recipeId }) => {
     return comments.slice(0, displayedComments).map((comment) => (
       <Comment key={comment.id}>
         <CommentContent>
-          <strong>{comment.userName}</strong>
+        <strong>
+          <Link to={`/profile/${comment.userId}`} style={{ textDecoration: 'none', color: '#28a745' }}>
+            {comment.userName}
+          </Link>
+        </strong>
           <span>{comment.content}</span>
         </CommentContent>
         <CommentFooter>
@@ -303,7 +309,11 @@ const CommentSection = ({ recipeId }) => {
             {comment.replies && comment.replies.map((reply) => (
               <Comment key={reply.id}>
                 <CommentContent>
-                  <strong>{reply.userName}</strong>
+                <strong>
+          <Link to={`/profile/${comment.userId}`} style={{ textDecoration: 'none', color: '#28a745' }}>
+            {comment.userName}
+          </Link>
+        </strong>
                   <span>{reply.content}</span>
                 </CommentContent>
                 <CommentFooter>
@@ -325,12 +335,15 @@ const CommentSection = ({ recipeId }) => {
   return (
     <CommentSectionWrapper>
       <h3 style={{marginBottom:"20px"}}>Comment Your Experience</h3>
+      {userEmail && (
+              <>
       <CommentInput
         value={newComment}
         onChange={(e) => setNewComment(e.target.value)}
         placeholder="Write a comment..."
       />
-      <SubmitButton onClick={handleCommentSubmit}>Submit Comment</SubmitButton>
+      <SubmitButton onClick={handleCommentSubmit}>Submit Comment</SubmitButton> </>
+            )}
 
       {renderComments(comments)}
 

@@ -20,15 +20,15 @@ router.get('/', async (req, res) => {
     // Get unique userEmails from the comments
     const uniqueUserEmails = [...new Set(comments.map(comment => comment.userEmail))];
 
-    // Fetch the names for each unique userEmail from the User table
+    // Fetch the names and userIds for each unique userEmail from the User table
     const users = await prisma.user.findMany({
       where: { email: { in: uniqueUserEmails } },
-      select: { email: true, name: true },
+      select: { email: true, name: true, id: true }, // Add userId (id) to the selection
     });
 
-    // Create a mapping of userEmail to user name
+    // Create a mapping of userEmail to user name and userId
     const userMap = users.reduce((acc, user) => {
-      acc[user.email] = user.name;
+      acc[user.email] = { name: user.name, id: user.id }; // Include userId
       return acc;
     }, {});
 
@@ -38,7 +38,8 @@ router.get('/', async (req, res) => {
         .filter(comment => comment.parentId === parentId)
         .map(comment => ({
           ...comment,
-          userName: userMap[comment.userEmail] || 'Unknown User', // Add user name from userMap
+          userName: userMap[comment.userEmail]?.name || 'Unknown User', // Add user name
+          userId: userMap[comment.userEmail]?.id || null, // Add userId
           replies: nestComments(comments, comment.id),
         }));
 
