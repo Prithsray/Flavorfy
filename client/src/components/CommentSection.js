@@ -284,7 +284,7 @@ const CommentSection = ({ recipeId }) => {
           {!comment.parentId && (
             <>
               <ReplyButton onClick={() => handleReplyToggle(comment.id)}>
-                {showReplies[comment.id] ? 'Hide Replies' : 'Reply'}
+                {showReplies[comment.id] ? 'Hide Replies' : 'Replies'}
               </ReplyButton>
               {comment.userEmail === userEmail && (
                 <button onClick={() => handleDeleteComment(comment.id)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}>
