@@ -212,6 +212,27 @@ const DropdownItem = styled.div`
   }
 `;
 
+const StyledButtonLink = styled(Link)`
+  color: #fff;
+  background-color: #28a745;
+  padding: 0.6rem 1.2rem;
+  font-size: 1.1rem;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-block;
+  
+  &:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    display: block;
+    padding: 0.8rem 1.2rem;
+  }
+`;
+
 const Header = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -317,12 +338,12 @@ const Header = () => {
                   </DropdownMenu>
                 </>
               ) : (
-                <StyledLink to="#" onClick={() => {
+                <StyledButtonLink to="#" onClick={() => {
                   setIsLoginModalOpen(true);
                   setIsNavOpen(false);
                 }}>
                   Login/Register
-                </StyledLink>
+                </StyledButtonLink>
               )}
             </UserSection>
           </Navigation>
