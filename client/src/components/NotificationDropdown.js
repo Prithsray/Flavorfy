@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaBell } from 'react-icons/fa';
 import axios from 'axios';
@@ -85,15 +85,10 @@ const RecipeImage = styled.img`
   margin-left: 10px;
   object-fit: cover;
 `;
-
 const NotificationDropdown = ({ user, isOpen, onToggle }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const API_BASE_URL = process.env.REACT_APP_API_URL;
-
-  // Refs to the bell icon and the dropdown container
-  const bellIconRef = useRef(null);
-  const dropdownRef = useRef(null);
 
   // Fetch notifications from API when component is mounted or user changes
   useEffect(() => {
@@ -145,29 +140,11 @@ const NotificationDropdown = ({ user, isOpen, onToggle }) => {
     return <span>{content}</span>; // If no recipeId, just display the content without a link
   };
 
-  // Close dropdown if clicked outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
-          bellIconRef.current && !bellIconRef.current.contains(event.target)) {
-        onToggle(); // Close dropdown
-      }
-    };
-
-    // Add event listener on mount
-    document.addEventListener('mousedown', handleClickOutside);
-
-    // Cleanup event listener on unmount
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onToggle]);
-
   return (
-    <NotificationIcon ref={bellIconRef} onClick={onToggle}>
+    <NotificationIcon onClick={onToggle}>
       <FaBell />
       {unreadCount > 0 && <Badge>{unreadCount}</Badge>} {/* Show unread count */}
-      <NotificationDropdownContainer ref={dropdownRef} isOpen={isOpen} notificationsCount={notifications.length}>
+      <NotificationDropdownContainer isOpen={isOpen} notificationsCount={notifications.length}>
         {notifications.length > 0 ? (
           notifications.map((notification) => (
             <NotificationItem key={notification.id}>
@@ -192,3 +169,4 @@ const NotificationDropdown = ({ user, isOpen, onToggle }) => {
 };
 
 export default NotificationDropdown;
+
