@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import LoginModal from './LoginModal';
 import { FaChevronDown, FaSearch, FaBars, FaTimes } from 'react-icons/fa';
+import NotificationDropdown from './NotificationDropdown';
 
 const HeaderContainer = styled.header`
   background-color: #343a40;
@@ -211,7 +212,6 @@ const DropdownItem = styled.div`
     }
   }
 `;
-
 const StyledButtonLink = styled(Link)`
   color: #fff;
   background-color: #28a745;
@@ -239,6 +239,7 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false); 
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
@@ -343,11 +344,18 @@ const Header = () => {
                   setIsNavOpen(false);
                 }}>
                   Login/Register
-                </StyledButtonLink>
+                  </StyledButtonLink>
               )}
             </UserSection>
           </Navigation>
         </MainContent>
+        {user && (
+  <NotificationDropdown
+    user={user}  // Pass the user object to NotificationDropdown
+    isOpen={isNotificationOpen}
+    onToggle={() => setIsNotificationOpen(!isNotificationOpen)}
+  />
+)}
       </HeaderContent>
       
       <LoginModal isOpen={isLoginModalOpen} onRequestClose={() => setIsLoginModalOpen(false)} />

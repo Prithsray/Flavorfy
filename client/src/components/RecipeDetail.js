@@ -198,7 +198,7 @@ const RecipeDetail = () => {
           <PostedByText>Posted By: {user.name}</PostedByText>
 
           {/* Comment section */}
-          <CommentSection recipeId={id} />
+          <CommentSection recipeId={id} postuserEmail={user.email} recipeName={recipe.title} />
         </RecipeContent>
 
         <Sidebar>

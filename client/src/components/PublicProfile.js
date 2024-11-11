@@ -3,6 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
 import Header from './Header';
+import postNotification from '../services/notificationService.js';
 
 // Styled components
 const ProfileContainer = styled.div`
@@ -232,6 +233,7 @@ const Profile = () => {
         },
       });
       setIsFollowing(followingResponse.data.alreadyFollowing);
+      
     } catch (err) {
       setError('Failed to check follow status');
     }
@@ -245,6 +247,7 @@ const Profile = () => {
         followEmail: user.user.email, // Adjusted to match the new structure
       });
       setIsFollowing(true);
+      await postNotification(user.user.email, `${sessionStorage.getItem('name')} started following you!`, 'follow',`${sessionStorage.getItem('email')}`);
     } catch (err) {
       setError('Failed to follow user');
     }

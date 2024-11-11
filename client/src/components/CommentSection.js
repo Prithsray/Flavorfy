@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import postNotification from '../services/notificationService.js';
 
 const CommentSectionWrapper = styled.div`
   background-color: #f8f9fa; /* Light gray background to stand out */
@@ -190,7 +191,7 @@ const ShowMoreButton = styled.button`
   }
 `;
 
-const CommentSection = ({ recipeId }) => {
+const CommentSection = ({ recipeId,postuserEmail,recipeName }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [showReplies, setShowReplies] = useState({});
@@ -216,11 +217,13 @@ const CommentSection = ({ recipeId }) => {
       .then(response => {
         setComments(prevComments => [response.data, ...prevComments]);
         setNewComment('');
+        if(userEmail!==postuserEmail){
+        postNotification(postuserEmail, `${sessionStorage.getItem('name')} Commented on your post of ${recipeName}`, 'comment',`${sessionStorage.getItem('email')}`,recipeId);}
       })
       .catch(error => console.error('Error submitting comment:', error));
   };
 
-  const handleReplySubmit = (parentId) => {
+  const handleReplySubmit = (parentId,respondentEmail) => {
     const replyData = { content: replyContent[parentId], userEmail, recipeId, parentId };
     axios.post(`${API_BASE_URL}/api/comments`, replyData)
       .then(response => {
@@ -233,6 +236,8 @@ const CommentSection = ({ recipeId }) => {
           return updatedComments;
         });
         setReplyContent(prev => ({ ...prev, [parentId]: '' }));
+        if(userEmail!==respondentEmail){
+        postNotification(respondentEmail, `${sessionStorage.getItem('name')} Replied on your post of ${recipeName}`, 'reply',`${sessionStorage.getItem('email')}`,recipeId);}
       })
       .catch(error => console.error('Error submitting reply:', error));
   };
@@ -303,7 +308,7 @@ const CommentSection = ({ recipeId }) => {
                   onChange={(e) => setReplyContent(prev => ({ ...prev, [comment.id]: e.target.value }))}
                   placeholder="Write a reply..."
                 />
-                <SubmitButton onClick={() => handleReplySubmit(comment.id)}>Reply</SubmitButton>
+                <SubmitButton onClick={() => handleReplySubmit(comment.id,comment.userEmail)}>Reply</SubmitButton>
               </>
             )}
             {comment.replies && comment.replies.map((reply) => (
@@ -311,7 +316,7 @@ const CommentSection = ({ recipeId }) => {
                 <CommentContent>
                 <strong>
           <Link to={`/profile/${comment.userId}`} style={{ textDecoration: 'none', color: '#28a745' }}>
-            {comment.userName}
+            {reply.userName}
           </Link>
         </strong>
                   <span>{reply.content}</span>
