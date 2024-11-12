@@ -285,7 +285,7 @@ const Home = () => {
         setLoading(false);
       })
       .catch(error => {
-        setError('Failed to fetch featured recipes');
+        setError('Failed to load please check your connectivity and refresh');
         setLoading(false);
       });
   }, []);
