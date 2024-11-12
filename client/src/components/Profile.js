@@ -7,7 +7,7 @@ const ProfileContainer = styled.div`
   padding: 2rem;
   max-width: 800px;
   margin: auto;
-  background-color: #fff;
+  background-color: #f9fafb;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
@@ -63,14 +63,14 @@ const EditButton = styled.button`
   padding: 0.5rem 1rem;
   font-size: 1rem;
   color: #fff;
-  background-color: #007bff;
+  background-color: #00cc44;
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #009933;
   }
 `;
 

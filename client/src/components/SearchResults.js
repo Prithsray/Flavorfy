@@ -3,13 +3,13 @@ import axios from 'axios';
 import Header from './Header';
 import styled from 'styled-components';
 import { useLocation, Link } from 'react-router-dom';
-
+import LoadingScreen from "./Loading";
 const SearchResultsContainer = styled.div`
   padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f8f9fa;
+  background-color: #fff;
 `;
 
 const PageTitle = styled.h1`
@@ -160,7 +160,7 @@ const SearchResults = () => {
     }
   }, [searchQuery]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingScreen/>;
   if (error) return <p>{error}</p>;
 
   const renderActiveTabResults = () => {

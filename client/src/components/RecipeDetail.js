@@ -4,8 +4,10 @@ import axios from 'axios';
 import Header from './Header';
 import CommentSection from './CommentSection';
 import styled from 'styled-components';
+import LoadingScreen from "./Loading";
 
 const RecipeDetailContainer = styled.div`
+background-color: #fff;
   padding: 2rem;
   display: flex;
   flex-direction: row;
@@ -32,9 +34,10 @@ const RecipeContent = styled.div`
 `;
 
 const Sidebar = styled.div`
+background-color: #fff;
   padding: 1rem;
   flex: 1; /* Sidebar should take less space */
-  background-color: #f9f9f9;
+  
   margin-left: 2rem;
   border-radius: 8px;
   width: 90%;
@@ -91,7 +94,7 @@ const RecipeSuggestion = styled.div`
   flex: 1;
   background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add shadow for a card-like effect */
+  box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.1); /* Add shadow for a card-like effect */
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 
@@ -169,7 +172,7 @@ const RecipeDetail = () => {
     return '';
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingScreen/>;
   if (error) return <p>{error}</p>;
 
   const { recipe, user } = recipeData;

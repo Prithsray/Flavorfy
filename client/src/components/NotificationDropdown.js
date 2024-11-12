@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 const NotificationIcon = styled.div`
-  color: white;
+  color: black;
   font-size: 1.5rem;
   cursor: pointer;
   margin-left: 2rem;
@@ -39,7 +39,8 @@ const NotificationDropdownContainer = styled.div`
   right: 0;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+   
+  box-shadow: 7px 7px 20px 7px rgba(0, 0, 0, 0.1);
   width: 300px;
   padding: 10px 0;
   max-height: ${({ notificationsCount }) => (notificationsCount > 10 ? '300px' : 'auto')};

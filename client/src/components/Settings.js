@@ -29,7 +29,7 @@ const TabContainer = styled.div`
 
 const Tab = styled.button`
   padding: 1rem; // Increase padding for a comfortable click area
-  background-color: ${(props) => (props.active ? '#007bff' : '#e9ecef')};
+  background-color: ${(props) => (props.active ? '#1cca5b' : '#e9ecef')};
   color: ${(props) => (props.active ? '#fff' : '#6c757d')};
   border: none;
   cursor: pointer;
@@ -39,7 +39,7 @@ const Tab = styled.button`
   margin-bottom: 0.8rem; // Space between tabs
 
   &:hover {
-    background-color: ${(props) => (props.active ? '#0056b3' : '#dee2e6')};
+    background-color: ${(props) => (props.active ? '#16a34a' : '#dee2e6')};
   }
 `;
 
@@ -55,7 +55,7 @@ const Input = styled.input`
   transition: border-color 0.3s ease;
 
   &:focus {
-    border-color: #007bff;
+    border-color: #16a34a;
   }
 `;
 
@@ -63,14 +63,14 @@ const UpdateButton = styled.button`
   padding: 0.6rem 1.2rem;
   font-size: 1rem;
   color: #fff;
-  background-color: #007bff;
+  background-color: #1cca5b;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #16a34a;
   }
 `;
 

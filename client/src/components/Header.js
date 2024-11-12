@@ -6,11 +6,26 @@ import { FaChevronDown, FaSearch, FaBars, FaTimes } from 'react-icons/fa';
 import NotificationDropdown from './NotificationDropdown';
 
 const HeaderContainer = styled.header`
-  background-color: #343a40;
-  padding: 0.5rem 1rem;
-  color: #fff;
-  position: relative;
+  background-color: rgba(255, 255, 255, 0.98);
+  padding: 0.75rem 1.5rem;
+  position: fixed;
+  width: 100%;
+  top: 0;
   z-index: 1000;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    0 1px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(8px);
+  
+  &:hover {
+    box-shadow: 
+      0 6px 12px -2px rgba(0, 0, 0, 0.12),
+      0 3px 6px -2px rgba(0, 0, 0, 0.07),
+      0 1px 0 rgba(0, 0, 0, 0.05);
+  }
 `;
 
 const HeaderContent = styled.div`
@@ -28,22 +43,32 @@ const HeaderContent = styled.div`
 const LogoAndToggle = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
 `;
 
 const Logo = styled.img`
-  height: 50px;
+  height: 45px;
   width: auto;
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.02);
+  }
 `;
 
 const MobileToggle = styled.button`
   display: none;
   background: none;
   border: none;
-  color: white;
-  font-size: 1.5rem;
+  color: #2c3e50;
+  font-size: 1.25rem;
   cursor: pointer;
   padding: 0.5rem;
+  transition: color 0.3s ease;
+  
+  &:hover {
+    color: #16a34a;
+  }
   
   @media (max-width: 768px) {
     display: block;
@@ -72,38 +97,52 @@ const SearchBar = styled.form`
   max-width: 500px;
   width: 100%;
   margin: 0 2rem;
+  position: relative;
   
   @media (max-width: 768px) {
     margin: 1rem 0;
     order: -1;
   }
 `;
-
 const SearchInput = styled.input`
   flex: 1;
-  padding: 0.5rem 1rem;
-  border: 1px solid #ced4da;
-  border-radius: 4px 0 0 4px;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+  border-color: #16a34a;
   outline: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  background-color: #f8fafc;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
   
   &:focus {
-    border-color: #28a745;
+    
+    box-shadow: 
+      0 0 0 3px rgba(22, 163, 74, 0.1),
+      0 2px 4px rgba(0, 0, 0, 0.03);
+    background-color: white;
+  }
+  
+  &::placeholder {
+    color: #94a3b8;
   }
 `;
 
 const SearchButton = styled.button`
-  padding: 0.5rem 1rem;
-  background-color: #28a745;
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.5rem;
+  background: none;
   border: none;
-  border-radius: 0 4px 4px 0;
-  color: white;
+  color: #64748b;
   cursor: pointer;
-  display: flex;
-  align-items: center;
+  transition: color 0.3s ease;
   
   &:hover {
-    background-color: #218838;
+    color: #16a34a;
   }
 `;
 
@@ -141,18 +180,36 @@ const NavItem = styled.li`
 `;
 
 const StyledLink = styled(Link)`
-  color: #fff;
+  color: #2c3e50;
   text-decoration: none;
-  font-size: 1.1rem;
-  transition: color 0.3s ease;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 0.5rem 0;
+  position: relative;
+  
+  &:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #16a34a;
+    transition: width 0.3s ease;
+  }
   
   &:hover {
-    color: #28a745;
+    color: #16a34a;
+    
+    &:after {
+      width: 100%;
+    }
   }
   
   @media (max-width: 768px) {
     display: block;
-    padding: 0.5rem 0;
+    padding: 0.75rem 0;
   }
 `;
 
@@ -163,73 +220,93 @@ const UserSection = styled.div`
 const ProfileButton = styled.button`
   background: none;
   border: none;
-  color: white;
+  color: #2c3e50;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
   
   &:hover {
-    color: #28a745;
+    color: #16a34a;
+    background-color: rgba(22, 163, 74, 0.05);
   }
 `;
-
 const DropdownMenu = styled.div`
   position: absolute;
-  top: 100%;
+  top: calc(100% + 0.5rem);
   right: 0;
   background-color: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  min-width: 200px;
+  border-radius: 8px;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  min-width: 220px;
   display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
   
   @media (max-width: 768px) {
     position: static;
     box-shadow: none;
     background-color: transparent;
     min-width: 100%;
+    border: none;
   }
 `;
 
 const DropdownItem = styled.div`
   padding: 0.75rem 1rem;
-  color: ${({ theme }) => theme.dark ? '#fff' : '#333'};
+  color: #2c3e50;
   cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
   
   &:hover {
-    background-color: ${({ theme }) => theme.dark ? '#4a4a4a' : '#f8f9fa'};
+    background-color: #f8fafc;
+    color: #16a34a;
   }
   
   @media (max-width: 768px) {
-    color: white;
-    padding: 0.5rem 0;
+    color: #2c3e50;
+    padding: 0.75rem 0;
     
     &:hover {
       background-color: transparent;
-      color: #28a745;
+      color: #16a34a;
     }
   }
 `;
+
 const StyledButtonLink = styled(Link)`
-  color: #fff;
-  background-color: #28a745;
-  padding: 0.6rem 1.2rem;
-  font-size: 1.1rem;
+  color: white;
+  background-color: #16a34a;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
   text-decoration: none;
-  border-radius: 4px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  display: inline-block;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+  font-weight: 500;
   
   &:hover {
-    background-color: #218838;
-    transform: translateY(-2px);
+    background-color: #15803d;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15);
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 
   @media (max-width: 768px) {
     display: block;
-    padding: 0.8rem 1.2rem;
+    text-align: center;
+    padding: 1rem 1.5rem;
   }
 `;
 
@@ -281,7 +358,7 @@ const Header = () => {
       <HeaderContent>
         <LogoAndToggle>
           <Link to="/">
-            <Logo src="/logo.png" alt="Flavorfy Logo" />
+            <Logo src="/logo_grey.png" alt="Flavorfy Logo" />
           </Link>
           <MobileToggle onClick={() => setIsNavOpen(!isNavOpen)}>
             {isNavOpen ? <FaTimes /> : <FaBars />}

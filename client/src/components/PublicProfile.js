@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
 import Header from './Header';
 import postNotification from '../services/notificationService.js';
+import LoadingScreen from "./Loading";
 
 // Styled components
 const ProfileContainer = styled.div`
@@ -325,7 +326,7 @@ const Profile = () => {
     setShowFollowingModal(false);
   };
 
-  if (loading) return <LoadingText>Loading profile...</LoadingText>;
+  if (loading) return <LoadingScreen/>;
   if (error) return <ErrorText>{error}</ErrorText>;
 
   return (

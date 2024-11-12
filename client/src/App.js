@@ -16,10 +16,13 @@ import Settings from './components/Settings'
 const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensures the container takes at least the full height of the viewport */
+  min-height: 100vh;
+  margin-top:70px; /* Ensures the container takes at least the full height of the viewport */
+  
 `;
 
 const MainContent = styled.main`
+background-color: #fff;
   flex: 1; /* Allows the main content to grow and fill available space */
 `;
 

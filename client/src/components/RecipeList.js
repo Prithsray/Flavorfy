@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from './Header';
 import styled, { keyframes, css } from 'styled-components';
+import LoadingScreen from "./Loading";
 
 const fadeIn = keyframes`
   from { opacity: 0; }
@@ -147,7 +148,8 @@ const RecipeList = () => {
     }, 0);
   };
 
-  if (loading) return <p>Loading...</p>;
+ 
+if (loading) return <LoadingScreen/>;
   if (error) return <p>{error}</p>;
 
   // Get recipes for the current page

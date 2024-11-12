@@ -3,13 +3,14 @@ import axios from 'axios';
 import styled from 'styled-components';
 import Header from './Header';
 import EditRecipeModal from './EditRecipeModal';
+import LoadingScreen from "./Loading";
 
 // Styled Components
 const Container = styled.div`
   padding: 50px;
   max-width: 1400px;
   margin: 0 auto;
-  background-color: #ffffff;
+  background-color: #f9fafb;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 `;
@@ -350,7 +351,7 @@ const RecipeList = () => {
       <>
         <Header />
         <ProfileContainer>
-          <LoadingMessage>Loading your recipes...</LoadingMessage>
+        <LoadingScreen/>
         </ProfileContainer>
       </>
     );

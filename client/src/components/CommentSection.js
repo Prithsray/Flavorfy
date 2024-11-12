@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 import postNotification from '../services/notificationService.js';
 
 const CommentSectionWrapper = styled.div`
-  background-color: #f8f9fa; /* Light gray background to stand out */
+  background-color: #fff; /* Light gray background to stand out */
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 14px 20px rgba(0, 0, 0, 0.1);
   max-width: 900px;
   margin: 2rem auto;
 

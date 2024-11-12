@@ -5,6 +5,7 @@ import Slider from 'react-slick';
 import Header from './Header';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import LoadingScreen from "./Loading";
 
 const HomeContainer = styled.div`
   display: flex;
@@ -289,7 +290,7 @@ const Home = () => {
       });
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingScreen/>;
   if (error) return <p>{error}</p>;
 
   return (
